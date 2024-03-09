@@ -47,13 +47,13 @@ class Ticket(db.Model):
     #     db.String, nullable=False, default="low"
     # )  # low (default), medium, high
 
-    support_staff_tag_id= db.Column(db.String)   # Edit by Saran
+    support_staff_tag_id= db.Column(db.String, default="none")   # Edit by Saran
 
     # tag_1 = db.Column(db.String, nullable=False)
     # tag_2 = db.Column(db.String, nullable=True, default="")
     # tag_3 = db.Column(db.String, nullable=True, default="")
-
-    status = db.Column(db.String, nullable=False, default="pending")  
+    type =  db.Column(db.String, nullable=False)  #public and private #### edited by shubham 
+    status = db.Column(db.String, nullable=False, default="unresolved") # resolved, unresolved #### edited by shubham  
 
     # votes = db.Column(
     #     db.Integer, nullable=False, default=0
