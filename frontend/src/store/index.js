@@ -23,6 +23,9 @@ export default new Vuex.Store({
     get_user: function (state) {
       return state.user
     },
+    get_user_name: function(state) {
+      return state.user.first_name + " " + state.user.last_name
+    },
     get_user_id: function (state) {
       return state.user.user_id
     },
@@ -104,7 +107,7 @@ export default new Vuex.Store({
         alert("Token Expired. Please login again");
         context.commit('SET_STATE_AFTER_LOGOUT', payload);
         router.push("/login");
-      }, 1 * 60 * 1000);  // 1000 means 1 sec
+      }, 1 * 60 * 1000000);  // 1000 means 1 sec
       context.commit('SET_TIMEOUT_ID', timeout_id);
     },
   },

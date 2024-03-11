@@ -9,7 +9,7 @@
           id="input-title"
           v-model="form.title"
           type="text"
-          placeholder="Enter title"
+          placeholder= "Enter title OR search title"
           :state="check_title"
           aria-describedby="input-live-feedback-title"
           :disabled="user_role == 'student' ? false : true"
@@ -23,44 +23,56 @@
       <b-form-group
         ><b-form-textarea
           id="input-description"
-          v-model="form.description"
+          v-model="form.chat"
           type="text"
-          placeholder="Enter description (Optional)"
+          placeholder="Enter description"
           rows="3"
           max-rows="6"
           :disabled="user_role == 'student' ? false : true"
+          required
         ></b-form-textarea
       ></b-form-group>
 
-      <Tagging
-        @tags_changed="onTagsChanged"
-        v-show="user_role == 'student' ? true : false"
-      ></Tagging>
-
-      <b-form-group
-        label="Select priority:"
+      <b-container>
+        <b-row>
+          <b-col>
+            <b-form-group
+        label="Select Type:"
+        title="Public tickets will be added to discourse, for peer collaboration"
         v-slot="{ ariaDescribedby }"
         v-show="user_role == 'student' ? true : false"
       >
         <b-form-radio-group
           id="radio-group-priority"
-          v-model="form.priority"
-          :options="priority_options"
+          v-model="form.type"
+          :options="type_options"
           :aria-describedby="ariaDescribedby"
           name="radio-group-priority"
+          required
         ></b-form-radio-group>
+      
       </b-form-group>
-
-      <b-form-group v-show="user_role == 'student' ? false : true"
-        ><b-form-textarea
-          id="input-solution"
-          v-model="form.solution"
-          type="text"
-          placeholder="Enter solution"
-          rows="3"
-          max-rows="6"
-        ></b-form-textarea
-      ></b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+        label="Select Support Staff(optional):"
+        v-slot="{ ariaDescribedby }"
+        v-show="user_role == 'student' ? true : false"
+      >
+            <b-form-select v-model="form.support_staff_tag_id" size="sm" :options="support_staff_option" ></b-form-select>
+</b-form-group>
+          </b-col>
+          <b-col>
+            <b-form-group
+        label="Select Category:"
+        v-slot="{ ariaDescribedby }"
+        v-show="user_role == 'student' ? true : false"
+      >
+            <b-form-select v-model="form.catagory" size="sm" :options="category_option" required></b-form-select>
+            </b-form-group>
+          </b-col>
+        </b-row>
+      </b-container>
 
       <FileUpload @file_uploading="onFileUpload"></FileUpload>
 
@@ -68,8 +80,8 @@
       <br />
       <b-button style="margin: 10px" type="submit" variant="primary">Submit</b-button>
       <b-button v-show="hideReset ? false : true" style="margin: 10px" type="reset" variant="danger"
-        >Reset</b-button
-      >
+        >Reset</b-button>
+        {{ form.chat }}
     </b-form>
     <br />
   </div>
@@ -78,36 +90,69 @@
 <script>
 import * as common from "../assets/common.js";
 import FileUpload from "./FileUpload.vue";
-import Tagging from "./Tagging.vue";
+// import Tagging from "./Tagging.vue";
 
 export default {
   name: "TicketForm",
   props: ["ticket_id", "title", "description", "priority", "tags", "hideReset", "editTicket"],
-  components: { Tagging, FileUpload },
+  components: { FileUpload },
   data() {
     return {
-      priority_options: [
-        { text: "Low", value: "low" },
-        { text: "Medium", value: "medium" },
-        { text: "High", value: "high" },
+      type_options: [
+        { text: "Private", value: "private" },
+        { text: "Public", value: "public" },
+      ],
+      support_staff_option: [
+      { value: null, text: 'Please select an option' },
+      ],
+      category_option: [
+          { value: null, text: 'Please select an option' },
+          { value: 'Operational', text: 'Operational' },
+          { value: 'Admistration', text: 'Admistration' },
+          { value: 'Accounts', text: 'Accounts' },
+          { value: 'Web Op', text: 'Web Op'}
       ],
       form: {
-        title: this.title ? this.title : "",
-        description: this.description ? this.description : "",
-        priority: this.priority ? this.priority : "low",
-        solution: "",
-        tags: [],
-        tag_1: "",
-        tag_2: "",
-        tag_3: "",
+        title: "",
+        chat: "",
+        type: "",
+        support_staff_tag_id: null,
+        catagory: null,
         attachments: [],
       },
       user_role: this.$store.getters.get_user_role,
       show: true,
     };
   },
-  created() {},
+  created() {
+
+  this.fetch_all_support_data();
+    
+  },
   methods: {
+    fetch_all_support_data(){
+      fetch(common.SUPPORT_API + "/fetch_all_support_data", {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          web_token: this.$store.getters.get_web_token,
+          user_id: this.$store.getters.get_user_id,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          for (let i in data.message){
+            this.support_staff_option.push(data.message[i])
+          }
+        })
+        .catch((error) => {
+          this.$log.error(`Error : ${error}`);
+          this.flashMessage.error({
+            message: "Internal Server Error",
+          });
+        });
+    },
+    
     onFileUpload(value) {
       this.form.attachments.splice(0, this.form.attachments.length, ...value);
       for (let i = 0; i < this.form.attachments.length; i++) {}
@@ -117,29 +162,16 @@ export default {
         event.preventDefault();
       }
 
-      if (this.user_role == "student" && this.form.tags.length == 0 && this.check_title) {
-        alert("Choose atleast 1 tag and title should be atleast 5 characters long.");
-      } else {
+      if (this.user_role == "student" && this.check_title) {
+        alert("title should be atleast 5 characters long.");
+      } 
+      else {
         alert('Submitting form. Click "Ok" to proceed?');
         this.$log.info("Submitting Ticket form");
 
-        for (let i in this.form.tags) {
-          if (this.form.tags[i]) {
-            this.form[`tag_${parseInt(i) + 1}`] = this.form.tags[i];
-          }
-        }
-
-        let fetch_url = "";
-        let method = "";
-        if (this.editTicket) {
-          fetch_url =
-            common.TICKET_API + `/${this.ticket_id}` + `/${this.$store.getters.get_user_id}`;
-          method = "PUT";
-        } else {
-          fetch_url = common.TICKET_API + `/${this.$store.getters.get_user_id}`;
-          method = "POST";
-        }
-
+        let fetch_url = common.TICKET_API + `/${this.$store.getters.get_user_id}`;
+        let method = "POST";
+    
         fetch(fetch_url, {
           method: method,
           headers: {
@@ -157,9 +189,6 @@ export default {
               });
               if (!this.editTicket) {
                 this.onReset();
-              }
-              if (this.user_role == "support") {
-                this.$emit("ticketResolved");
               }
             }
             if (data.category == "error") {
@@ -182,21 +211,21 @@ export default {
       }
       this.form.title = "";
       this.form.description = "";
-      this.solution = "";
       this.form.attachments = [];
-      this.form.tags = [];
+      this.form.type = "";
+      this.form.support_staff_selected= null;
+      this.form.category_selected = null;
       this.show = false;
       this.$nextTick(() => {
         this.show = true;
       });
     },
-    onTagsChanged(value) {
-      this.form.tags = value;
-    },
+  
   },
   computed: {
     check_title() {
-      return this.form.title.length > 5 ? true : false;
+      console.log(this.form.title.length)
+      return this.form.title.length > 5 ? false : true;
     },
   },
 };

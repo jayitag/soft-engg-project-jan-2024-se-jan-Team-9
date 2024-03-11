@@ -1,12 +1,14 @@
 <template>
   <div>
     <UserNavbar :id_="1"></UserNavbar>
+    <h1>Dashboard</h1> <!-- edited by shubham @ make Dashborad heading -->
 
-    <b-container fluid="xl">
+    <b-container fluid="xll" style="margin: 20px;">
       <b-row class="text-start">
-        <b-col cols="12" sm="7" md="8">
-          <h3 style="text-align: center">My Unresolved Tickets</h3>
-          <div style="height: 550px; overflow: auto; padding: 10px">
+        <b-col cols="12" sm="5" md="8">
+          <!-- <h3 style="text-align: center">My Unresolved Tickets</h3> -->
+          <h1 style="text-align: left">Dashboard</h1><!-- edited by shubham @ remove side border -->
+          <div style="height: 550px; border: 2px solid black; overflow: auto; padding: 10px">
             <div v-for="ticket in ticket_card_details" :key="ticket.ticket_id">
               <TicketCard
                 :ticket_id="ticket.ticket_id"
@@ -23,12 +25,16 @@
             </div>
           </div>
         </b-col>
-        <b-col cols="12" sm="5" md="4" style="border-left: dashed black">
-          <h3 style="text-align: center">My Activity</h3>
+        <!-- <b-col cols="12" sm="5" md="4" style="border: solid black"> -->
+        <b-col cols="12" sm="5" md="4"> <!-- edited by shubham @ remove side border -->
+          <!-- <h3 style="text-align: center">My Activity</h3> -->
+            <h3 style="text-align: left">My Activity</h3>  <!-- edited by shubham @ align title left -->
+          <div style="border: 2px solid black;"> <!-- edited by shubham @ make border -->
           <InfoCard title="tickets created" :value="n_tickets_created.toString()"></InfoCard>
           <InfoCard title="tickets resolved" :value="n_tickets_resolved.toString()"></InfoCard>
           <InfoCard title="tickets pending" :value="n_tickets_pending.toString()"></InfoCard>
           <InfoCard title="tickets upvoted" :value="n_tickets_upvoted.toString()"></InfoCard>
+          </div>
         </b-col>
       </b-row>
     </b-container>

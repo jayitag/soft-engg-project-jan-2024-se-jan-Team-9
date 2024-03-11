@@ -19,7 +19,8 @@
               ></b-form-input>
             </b-form-group>
           </b-col>
-          <b-col class="col" cols="12" md="3" sm="6">
+          <!-- edited by yukti -->
+          <!-- <b-col class="col" cols="12" md="3" sm="6">
             <b-form-group id="input-sort" label="Sort By: " label-for="input-sort">
               <b-form-select
                 id="input-sort"
@@ -62,7 +63,8 @@
                 disabled-field="disabled"
               ></b-form-checkbox-group
             ></b-form-group>
-          </b-col>
+          </b-col> -->
+          <!-- Edited by yukti to remove unnecessary filters already there in discourse. -->
         </b-row>
       </b-container>
       <b-button style="margin: 10px" type="submit" variant="primary">Submit</b-button>

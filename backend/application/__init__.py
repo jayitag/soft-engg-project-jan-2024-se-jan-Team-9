@@ -41,6 +41,7 @@ def create_app(env_type="dev"):
     app.register_blueprint(admin_bp, url_prefix=f"/api/{API_VERSION}/admin")
     app.register_blueprint(ticket_bp, url_prefix=f"/api/{API_VERSION}/ticket")
     app.register_blueprint(faq_bp, url_prefix=f"/api/{API_VERSION}/faq")
+   
 
     app.app_context().push()
     db.create_all()

@@ -20,17 +20,21 @@ const ADMIN_API = `${BASEURL}${ADMIN_API_PREFIX}`;
 const FAQ_API = `${BASEURL}${FAQ_API_PREFIX}`;
 const TICKET_API = `${BASEURL}${TICKET_API_PREFIX}`;
 
-const TICKET_API_ALLTICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-tickets`
+const TICKET_API_ALLTICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-tickets`;
+// Added by yukti -  TICKET_API_ALL_SUPPORT_TICKETS for support staff to fetch all tickets both resolved and unresolved.
+const TICKET_API_ALL_SUPPORT_TICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-support-tickets`; 
+// Added by yukti -  api to flag a ticket.
+const SUPPORT_STAFF_FLAG_API= `${BASEURL}${TICKET_API_PREFIX}/support-staff-flag-api`; 
 
 
 const STUDENT_ROUTES = ['/student', '/student-home', "/student-create-ticket", "/student-my-tickets", "/common-faqs", "/user-profile"]
-const SUPPORT_ROUTES = ['/support', '/support-home', "/support-my-tickets", "/common-faqs", "/user-profile"]
+const SUPPORT_ROUTES = ['/support', '/support-home', "/support-my-tickets", "/common-faqs", "/user-profile","/fetch_all_support_data" ]
 const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-validate-users", "/common-faqs", "/user-profile"]
 
 const STUDENT_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/student-home", active: false },
   { id: 2, title: "Create Ticket", link: "/student-create-ticket", active: false },
-  { id: 3, title: "My Tickets", link: "/student-my-tickets", active: false },
+  { id: 6, title: "Discourse", link: "#", active: false },    //-edited by shubham.
   { id: 4, title: "FAQs", link: "/common-faqs", active: false },
   { id: 5, title: "Logout", link: "#", active: false },
 ]
@@ -70,5 +74,7 @@ export {
   ADMIN_ROUTES,
   STUDENT_NAV_BUTTONS,
   SUPPORT_NAV_BUTTONS,
-  ADMIN_NAV_BUTTONS
+  ADMIN_NAV_BUTTONS,
+  TICKET_API_ALL_SUPPORT_TICKETS, // added by yukti
+  SUPPORT_STAFF_FLAG_API // added  by yukti
 };

@@ -63,7 +63,7 @@ class SupportAPI(Resource):
             if user:
                 if user.role == "support":
                     n_tickets_resolved = Ticket.query.filter_by(
-                        resolved_by=user_id
+                        support_staff_tag_id=user_id    # Edited by yukti - replaced resolved_by with support_staff_tag_id attribute of Ticket.
                     ).count()
                     n_total_unresolved_tickets = Ticket.query.filter_by(
                         status="pending"
@@ -110,6 +110,43 @@ class SupportAPI(Resource):
             support_util.update_user_profile_data(user_id, form)
 
 
+class AllSupportAPI(Resource):
+    # @token_required
+    # @users_required(users=["support"])
+    def get(self):
+        """
+        Usage
+        -----
+        Get a details of all support team member
+
+        Returns
+        -------
+        details
+
+        """
+        
+        try:
+            users = Auth.query.all()
+            print(users)
+        except Exception as e:
+            logger.error(
+                f"SupportAPI->get : Error occured while fetching support data : {e}"
+            )
+            raise InternalServerError
+        else:
+            support_list= []
+            print("hi")
+            for user in users:
+                print(user)
+                if user.role == "support":
+                    support_list.append({'value':user.user_id, 'text': user.first_name + user.last_name})
+            return success_200_custom(data=support_list)
+
+
+
+
+
 support_api.add_resource(SupportAPI, "/<string:user_id>")  # path is /api/v1/support
+support_api.add_resource(AllSupportAPI,"/fetch_all_support_data")
 
 # --------------------  END  --------------------

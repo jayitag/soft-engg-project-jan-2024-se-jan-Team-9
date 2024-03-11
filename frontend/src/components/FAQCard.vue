@@ -2,22 +2,12 @@
   <div>
     <b-container class="faq-card-container">
       <b-row class="row" @click="questionClicked">
-        <b-col class="col" cols="1" lg="1" sm="1">
-          <b-button variant="info">
-            <b-icon icon="question-octagon" font-scale="1.5"></b-icon>
-          </b-button>
-        </b-col>
-        <b-col class="col" cols="11" lg="11" sm="11">{{ question }}</b-col>
+        <b-col class="col" cols="11" lg="11" sm="11"> <b> Question : </b> {{ question }}</b-col>
       </b-row>
 
       <b-row class="row" v-show="show_answer" @click="questionClicked">
-        <b-col class="col" cols="1" lg="1" sm="1">
-          <b>
-            <i>Solution:</i>
-          </b>
-        </b-col>
         <b-col class="col" cols="11" lg="11" sm="11">
-          <p>{{ answer }}</p>
+          <b> Solution : </b> {{ answer }}
           <div v-show="attachments.length > 0">
             <p>Attachments:</p>
             <div v-for="(attach, imageIndex) in attachments" :key="imageIndex">

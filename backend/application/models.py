@@ -1,18 +1,17 @@
-# Online Support Ticket Application
-# Tushar Supe : 21f1003637
-# Vaidehi Agarwal: 21f1003880
-# File Info: This file contains sqlite database models (ORM).
+
 
 # --------------------  Imports  --------------------
 
 from .database import db
-
+from sqlalchemy import event   # edited by shubham
 # --------------------  Code  --------------------
 
 
 class Auth(db.Model):
     __tablename__ = "auth"
     user_id = db.Column(db.String, primary_key=True)
+    discourse_id = db.Column(db.Integer, nullable=False, default=0) # Edit by Saran
+    discourse_username = db.Column(db.String) # Edit by Saran
     role = db.Column(db.String, nullable=False)
     email = db.Column(db.String, nullable=False, unique=True)
     password = db.Column(db.String, nullable=False)
@@ -29,33 +28,48 @@ class Auth(db.Model):
 
     def __repr__(self):
         return f"Auth object for: {self.user_id} | {self.role} | {self.first_name} {self.last_name}"
+    
+# Edit by Saran
+@event.listens_for(Auth, 'after_insert')
+def set_discourse_username(mapper, connection, target):
+    target.discourse_username = target.email.split('@')[0]
+    
 
 
 class Ticket(db.Model):
     __tablename__ = "ticket"
     ticket_id = db.Column(db.String, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    description = db.Column(db.String, nullable=True, default="")
-    solution = db.Column(db.String, nullable=True, default="")
-    priority = db.Column(
-        db.String, nullable=False, default="low"
-    )  # low (default), medium, high
+    chat = db.Column(db.String, nullable=True, default="") # Edit by Saran
 
-    tag_1 = db.Column(db.String, nullable=False)
-    tag_2 = db.Column(db.String, nullable=True, default="")
-    tag_3 = db.Column(db.String, nullable=True, default="")
-    status = db.Column(db.String, nullable=False, default="pending")  # pending/resolved
-    votes = db.Column(
-        db.Integer, nullable=False, default=0
-    )  # creater can't vote, 1 vote/student
+    # solution = db.Column(db.String, nullable=True, default="")
+    # priority = db.Column(
+    #     db.String, nullable=False, default="low"
+    # )  # low (default), medium, high
+    is_flag=db.Column(db.String, default="False") # Edited by Yukti
+    is_faq=db.Column(db.String, default="False") # Edited by Yukti
+    support_staff_tag_id= db.Column(db.String, default="none")   # Edit by Saran
+
+    # tag_1 = db.Column(db.String, nullable=False)
+    # tag_2 = db.Column(db.String, nullable=True, default="")
+    # tag_3 = db.Column(db.String, nullable=True, default="")
+    type =  db.Column(db.String, nullable=False)  #public and private #### edited by shubham 
+    status = db.Column(db.String, nullable=False, default="unresolved") # resolved, unresolved #### edited by shubham  
+
+    # votes = db.Column(
+    #     db.Integer, nullable=False, default=0
+    # )  # creater can't vote, 1 vote/student
+
     created_by = db.Column(db.String, nullable=False)
     created_on = db.Column(
         db.Integer, nullable=False, default=0
     )  # time is stored as a timestamp
-    resolved_by = db.Column(db.String, nullable=True, default="")
-    resolved_on = db.Column(
-        db.Integer, nullable=True, default=0
-    )  # time is stored as a timestamp
+    # resolved_by = db.Column(db.String, nullable=True, default="")
+    # resolved_on = db.Column(
+    #     db.Integer, nullable=True, default=0
+    # )  # time is stored as a timestamp
+
+    catagory = db.Column(db.String, nullable=False)  # Edit by Saran
 
     def __repr__(self):
         return f"Ticket object for: {self.ticket_id} | {self.title}"

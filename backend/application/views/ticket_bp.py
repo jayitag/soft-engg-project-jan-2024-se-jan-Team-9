@@ -305,11 +305,10 @@ class TicketAPI(Resource):
         """
         details = {
             "title": "",
-            "description": "",
-            "priority": "",
-            "tag_1": "",
-            "tag_2": "",
-            "tag_3": "",
+            "chat": "",
+            "type": "",
+            "support_staff_tag_id": "",
+            "catagory": "",
         }
 
         # check user_id
@@ -342,12 +341,13 @@ class TicketAPI(Resource):
             )
             raise InternalServerError
         else:
-            if details["title"] == "" or details["tag_1"] == "":
+            if details["title"] == "" or details["type"] == "":
                 raise BadRequest(
-                    status_msg=f"Ticket title and at least one tag is required"
+                    status_msg=f"Ticket title and at type is required"
                 )
 
             ticket_id = ticket_utils.generate_ticket_id(details["title"], user_id)
+            details["chat"] = "{" + "{" + "name :" + user.first_name + " " + user.last_name + ", " + "role :" + user.role + ", " + "chat :" + details["chat"] + ", " + "date_time :" + str(time.time()) + "}"+ "}"
             details["ticket_id"] = ticket_id
             details["created_by"] = user_id
             details["created_on"] = int(time.time())
@@ -392,16 +392,21 @@ class TicketAPI(Resource):
         -------
 
         """
+        # edited by yukti
         details = {
+            
             "title": "",
             "description": "",
-            "tag_1": "",
-            "tag_2": "",
-            "tag_3": "",
-            "priority": "",
+           "is_flag":"",
+           "is_faq":"",
+           "support_staff_tag_id":"",
+           "type":"",
+           "created_by":"",
+           "created_on":0,
+           "category":"",
             "status": "",
-            "votes": 0,
-            "solution": "",
+            "chat": "",
+
         }
 
         # check url data
@@ -441,8 +446,8 @@ class TicketAPI(Resource):
             if not user:
                 raise NotFoundError(status_msg="User does not exists")
 
-            if ticket.status == "resolved":
-                raise BadRequest(status_msg=f"Resolved tickets can't be edited.")
+            # if ticket.status == "resolved":
+            #     raise BadRequest(status_msg=f"Resolved tickets can't be edited.")  # edited by yukti- need an edit on resolved tickets in order to change their is_faq attribute.
 
             role = user.role
 
@@ -495,49 +500,58 @@ class TicketAPI(Resource):
                         db.session.commit()
                         raise Success_200(status_msg="Successfully upvoted ticket.")
 
-            if role == "support":
-                sol = details["solution"]
-                if ticket_utils.is_blank(sol):
-                    raise BadRequest(status_msg="Solution can not be empty")
+            if role == "support": # edited by yukti
+                # sol = details["solution"]
+                # if ticket_utils.is_blank(sol):
+                    # raise BadRequest(status_msg="Solution can not be empty")
+                is_flag=details["is_flag"]
+                status=details["status"]
+                support_staff_tag_id=details["support_staff_tag_id"]
+                is_faq=details["is_faq"]
+                if ticket_utils.is_blank(is_flag):
+                    raise BadRequest(status_msg="Flag can not be empty")
                 else:
-                    ticket.solution = sol
-                    ticket.status = "resolved"
-                    ticket.resolved_by = user_id
-                    ticket.resolved_on = int(time.time())
+                    ticket.is_flag = is_flag
+                    ticket.is_faq=is_faq
+                    ticket.support_staff_tag_id=support_staff_tag_id
+                    ticket.status=status
+                    # ticket.status = "resolved"
+                    # ticket.support_staff_tag_id = user_id  # Edited by yukti - replaced resolved_by with support_staff_tag_id attribute of Ticket.
+                    # ticket.resolved_on = int(time.time())
 
-                    db.session.add(ticket)
+                    # db.session.add(ticket)
                     db.session.commit()
 
                     # send notification to user who created as well as voted
-                    try:
-                        _from = user.email
-                        ticket_votes = TicketVote.query.filter_by(
-                            ticket_id=ticket_id
-                        ).all()
-                        users_voted = [
-                            ticket_vote.user_id for ticket_vote in ticket_votes
-                        ]
-                        users_voted.append(ticket.created_by)
-                        users_email_name = []
-                        for user_id_ in users_voted:
-                            user_ = Auth.query.filter_by(user_id=user_id_).first()
-                            users_email_name.append(
-                                {
-                                    "email": user_.email,
-                                    "first_name": user_.first_name,
-                                    "ticket_id": ticket_id,
-                                }
-                            )
+                    # try:
+                    #     _from = user.email
+                    #     ticket_votes = TicketVote.query.filter_by(
+                    #         ticket_id=ticket_id
+                    #     ).all()
+                    #     users_voted = [
+                    #         ticket_vote.user_id for ticket_vote in ticket_votes
+                    #     ]
+                    #     users_voted.append(ticket.created_by)
+                    #     users_email_name = []
+                    #     for user_id_ in users_voted:
+                    #         user_ = Auth.query.filter_by(user_id=user_id_).first()
+                    #         users_email_name.append(
+                    #             {
+                    #                 "email": user_.email,
+                    #                 "first_name": user_.first_name,
+                    #                 "ticket_id": ticket_id,
+                    #             }
+                    #         )
 
-                        resp = send_email(
-                            to=users_email_name,
-                            _from=_from,
-                            sub="Your ticket is resolved",
-                        )
-                    except Exception as e:
-                        logger.error(
-                            f"TicketAPI->send mail : Error occured while sending notification : {e}"
-                        )
+                    #     resp = send_email(
+                    #         to=users_email_name,
+                    #         _from=_from,
+                    #         sub="Your ticket is resolved",
+                    #     )
+                    # except Exception as e:
+                    #     logger.error(
+                    #         f"TicketAPI->send mail : Error occured while sending notification : {e}"
+                    #     )
 
                     raise Success_200(status_msg="Successfully resolved a ticket.")
 
@@ -662,7 +676,49 @@ class AllTicketsAPI(Resource):
 
         return success_200_custom(data=all_tickets)
 
+# Added by yukti -  support staff fetch api for all the tickets both resolved and unresolved.
+########
+class AllSupportTicketsAPI(Resource):
+    @token_required
+    @users_required(users=["support"])
+    def get(self, user_id=""):
+        if ticket_utils.is_blank(user_id):
+            raise BadRequest(status_msg="User id is missing.")
 
+        user = Auth.query.filter_by(user_id=user_id).first()
+
+        resolved_tickets = Ticket.query.filter_by( type="private",status="resolved", is_flag="False").all()
+        unresolved_tickets = Ticket.query.filter_by(type="private",status="unresolved", is_flag="False").all()
+        print(resolved_tickets)
+        print(unresolved_tickets)
+        resolved_tickets = [ticket_utils.convert_ticket_to_dict(ticket) for ticket in resolved_tickets]
+        unresolved_tickets = [ticket_utils.convert_ticket_to_dict(ticket) for ticket in unresolved_tickets]
+
+        logger.info(f"Resolved tickets found : {len(resolved_tickets)}")
+        logger.info(f"Unresolved tickets found : {len(unresolved_tickets)}")
+
+        return success_200_custom(data={"resolved_tickets": resolved_tickets, "unresolved_tickets": unresolved_tickets})
+from flask import jsonify
+class SupportStaffFlagAPI(Resource):
+    @token_required
+    @users_required(users=["support"])
+    def put(self, user_id="", ticket_id=""):
+        if ticket_utils.is_blank(ticket_id) or ticket_utils.is_blank(user_id):
+            raise BadRequest(status_msg="User id or ticket id is missing.")
+        print(ticket_id)
+        print(user_id)
+
+        user = Auth.query.filter_by(user_id=user_id).first()
+        ticket = Ticket.query.filter_by(ticket_id=ticket_id).first()
+        if not ticket:
+            return {'message': 'Ticket not found'}, 404
+        ticket.is_flag = True
+        db.session.commit()
+        logger.info(f"Flagged this ticket : {ticket_id}")
+        print("successfully flagged.")
+        raise Success_200(status_msg="Successfully flagged ticket.")
+    
+###########
 class AllTicketsUserAPI(Resource):
     @token_required
     @users_required(users=["student", "support", "admin"])
@@ -709,17 +765,33 @@ class AllTicketsUserAPI(Resource):
             # get all pending tickets
             # status, priority, sort, filter will be as per filter options received
 
-            if "resolved" in args["status"]:
-                # get all tickets resolved by the support staff
-                user_tickets = Ticket.query.filter_by(resolved_by=user.user_id).all()
-            elif "pending" in args["status"]:
-                # get all pending tickets
-                user_tickets = Ticket.query.filter_by(status="pending").all()
-            else:
-                user_tickets = []
-            for ticket in user_tickets:
-                tick = ticket_utils.convert_ticket_to_dict(ticket)
-                all_tickets.append(tick)
+            # if "resolved" in args["status"]:
+            #     # get all tickets resolved by the support staff
+            #     user_tickets = Ticket.query.filter_by(support_staff_tag_id=user.user_id).all() # Edited by yukti - replaced resolved_by with support_staff_tag_id attribute of Ticket.
+            # elif "pending" in args["status"]:
+            #     # get all pending tickets
+            #     user_tickets = Ticket.query.filter_by(status="pending").all()
+            # else:
+            #     user_tickets = []
+            # for ticket in user_tickets:
+            #     tick = ticket_utils.convert_ticket_to_dict(ticket)
+            #     all_tickets.append(tick)
+            if ticket_utils.is_blank(user_id):  ## Edited by yukti
+                raise BadRequest(status_msg="User id is missing.")
+
+            user = Auth.query.filter_by(user_id=user_id).first()
+
+            resolved_tickets = Ticket.query.filter_by( type="private",status="resolved", is_flag="False").all()
+            unresolved_tickets = Ticket.query.filter_by(type="private",status="unresolved", is_flag="False").all()
+            print(resolved_tickets)
+            print(unresolved_tickets)
+            resolved_tickets = [ticket_utils.convert_ticket_to_dict(ticket) for ticket in resolved_tickets]
+            unresolved_tickets = [ticket_utils.convert_ticket_to_dict(ticket) for ticket in unresolved_tickets]
+
+            logger.info(f"Resolved tickets found : {len(resolved_tickets)}")
+            logger.info(f"Unresolved tickets found : {len(unresolved_tickets)}")
+
+            return success_200_custom(data={"resolved_tickets": resolved_tickets, "unresolved_tickets": unresolved_tickets})
 
         if role == "admin":
             # admin : get all tickets resolved globally (for creating faq)
@@ -742,5 +814,8 @@ ticket_api.add_resource(
 )  # path is /api/v1/ticket
 ticket_api.add_resource(AllTicketsAPI, "/all-tickets")
 ticket_api.add_resource(AllTicketsUserAPI, "/all-tickets/<string:user_id>")
+ticket_api.add_resource(AllSupportTicketsAPI, "/all-support-tickets/<string:user_id>")
+ticket_api.add_resource(SupportStaffFlagAPI, "/support-staff-flag-api/<string:user_id>/<string:ticket_id>")
+
 
 # --------------------  END  --------------------
