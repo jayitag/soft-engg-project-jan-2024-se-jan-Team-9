@@ -1,12 +1,12 @@
 <template>
   <div>
-    <UserNavbar :id_="1"></UserNavbar>
+    <UserNavbar :id_="2"></UserNavbar>
 
-    <b-container fluid="xl">
+    <b-container fluid="xll">
       <b-row class="text-start">
-        <b-col cols="12" sm="7" md="8">
+        <b-col cols="12" sm="7" md="12">
           <h3 style="text-align: center">Resolved Tickets</h3>
-          <div style="height: 550px; overflow: auto; padding: 10px">
+          <div style="min-height: 550px; overflow: auto; padding: 10px">
             <SearchTicketNew
               :ticket_card_details="resolved_tickets"
               
@@ -37,7 +37,7 @@ export default {
     };
   },
   created() {
-    fetch(common.TICKET_API_ALL_SUPPORT_TICKETS + `/${this.user_id}`, { // Edited by yukti -> fetched from a new api.
+    fetch(common.TICKET_API_ALLTICKETS + `/${this.user_id}`, { // Edited by yukti -> fetched from a new api.
       method: "GET",
       headers: {
         "Content-Type": "application/json",

@@ -81,7 +81,7 @@
       <b-button style="margin: 10px" type="submit" variant="primary">Submit</b-button>
       <b-button v-show="hideReset ? false : true" style="margin: 10px" type="reset" variant="danger"
         >Reset</b-button>
-        {{ form.chat }}
+
     </b-form>
     <br />
   </div>

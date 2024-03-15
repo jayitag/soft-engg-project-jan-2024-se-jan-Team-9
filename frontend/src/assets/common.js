@@ -8,7 +8,9 @@ const STUDENT_API_PREFIX = `/api/${VERSION}/student`;
 const SUPPORT_API_PREFIX = `/api/${VERSION}/support`;
 const ADMIN_API_PREFIX = `/api/${VERSION}/admin`;
 const FAQ_API_PREFIX = `/api/${VERSION}/faq/`;
-const TICKET_API_PREFIX = `/api/${VERSION}/ticket`
+const TICKET_API_PREFIX = `/api/${VERSION}/ticket`;
+const CHAT_API_PREFIX = `/api/${VERSION}/chat`;    // added  by Shubham
+
 
 const AUTH_API_LOGIN = `${BASEURL}${AUTH_API_PREFIX}/login`
 const AUTH_API_REGISTER = `${BASEURL}${AUTH_API_PREFIX}/register`
@@ -22,9 +24,14 @@ const TICKET_API = `${BASEURL}${TICKET_API_PREFIX}`;
 
 const TICKET_API_ALLTICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-tickets`;
 // Added by yukti -  TICKET_API_ALL_SUPPORT_TICKETS for support staff to fetch all tickets both resolved and unresolved.
-const TICKET_API_ALL_SUPPORT_TICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-support-tickets`; 
+// const TICKET_API_ALL_SUPPORT_TICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-support-tickets`; 
 // Added by yukti -  api to flag a ticket.
-const SUPPORT_STAFF_FLAG_API= `${BASEURL}${TICKET_API_PREFIX}/support-staff-flag-api`; 
+// const SUPPORT_STAFF_FLAG_API= `${BASEURL}${TICKET_API_PREFIX}/support-staff-flag-api`; 
+
+const CHAT_API = `${BASEURL}${CHAT_API_PREFIX}`; // added  by Shubham
+
+
+
 
 
 const STUDENT_ROUTES = ['/student', '/student-home', "/student-create-ticket", "/student-my-tickets", "/common-faqs", "/user-profile"]
@@ -75,6 +82,7 @@ export {
   STUDENT_NAV_BUTTONS,
   SUPPORT_NAV_BUTTONS,
   ADMIN_NAV_BUTTONS,
-  TICKET_API_ALL_SUPPORT_TICKETS, // added by yukti
-  SUPPORT_STAFF_FLAG_API // added  by yukti
+  // TICKET_API_ALL_SUPPORT_TICKETS, // added by yukti
+  // SUPPORT_STAFF_FLAG_API // added  by yukti
+  CHAT_API // added  by Shubham
 };

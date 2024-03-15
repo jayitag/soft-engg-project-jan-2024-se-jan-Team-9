@@ -40,7 +40,7 @@ class Ticket(db.Model):
     __tablename__ = "ticket"
     ticket_id = db.Column(db.String, primary_key=True)
     title = db.Column(db.String, nullable=False)
-    chat = db.Column(db.String, nullable=True, default="") # Edit by Saran
+    chat = db.Column(db.String(), nullable=True) # Edit by Saran
 
     # solution = db.Column(db.String, nullable=True, default="")
     # priority = db.Column(
