@@ -2,24 +2,26 @@
   <div>
     <UserNavbar :id_="1"></UserNavbar>
 
-    <b-container fluid="xl">
+    <b-container fluid="xll" style="margin: 20px; height: 100vh;">
       <b-row class="text-start">
         <b-col cols="12" sm="7" md="8">
           <h3 style="text-align: center">Unresolved Tickets</h3>
-          <div style="height: 550px; overflow: auto; padding: 10px">
+          <div style="height: 80 vh; overflow: auto; padding: 10px; border: 2px solid black;">
             <SearchTicketNew
               
               :ticket_card_details="unresolved_tickets"
             ></SearchTicketNew>
           </div>
         </b-col>
-        <b-col cols="12" sm="5" md="4" style="border-left: dashed black">
+        <b-col cols="12" sm="5" md="4" >
           <h3 style="text-align: center">My Activity</h3>
+          <div style="border: 2px solid black;">
           <InfoCard title="tickets resolved" :value="n_tickets_resolved.toString()"></InfoCard>
           <InfoCard
             title="tickets pending"
             :value="n_total_unresolved_tickets.toString()"
           ></InfoCard>
+          </div>
         </b-col>
       </b-row>
     </b-container>

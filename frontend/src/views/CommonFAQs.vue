@@ -31,8 +31,8 @@
             <div v-for="faq in filtered_faq_card_details" :key="faq.faq_id">
               <FAQCard
                 :faq_id="faq.faq_id"
-                :question="faq.title"
-                :answer="faq.chat"
+                :question="faq.question"
+                :answer="faq.solution"
                 :attachments="faq.attachments"
               ></FAQCard>
             </div>
@@ -79,8 +79,8 @@ export default {
     };
     let params = "";
     params = new URLSearchParams(form).toString();
-    // EDITED BY YUKTI
-fetch(common.TICKET_API_ALLTICKETS + `/${this.user_id}`, { // Edited by yukti -> fetched from a new api.
+
+    fetch(common.FAQ_API, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
@@ -90,21 +90,12 @@ fetch(common.TICKET_API_ALLTICKETS + `/${this.user_id}`, { // Edited by yukti ->
     })
       .then((response) => response.json())
       .then((data) => {
-        console.log(data)
         if (data.category == "success") {
           this.flashMessage.success({
-            message: "User data retrieved.",
+            message: `Total ${data.message.length} FAQs retrieved.`,
           });
-
-          this.n_tickets_resolved = data.message.resolved_tickets ? data.message.resolved_tickets.length : 0;
-          this.n_total_unresolved_tickets = data.message.unresolved_tickets ? data.message.unresolved_tickets.length : 0;
-          this.unresolved_tickets = data.message.unresolved_tickets;
-          this.resolved_tickets=data.message.resolved_tickets
-          this.alltickets = this.unresolved_tickets.concat(this.resolved_tickets);
-          this.faq_card_details = this.alltickets.filter(ticket => ticket.is_faq === "True");
-          this.filtered_faq_card_details=this.alltickets.filter(ticket => ticket.is_faq === "True");
-          console.log(this.faq_card_details)
-           // For passing on the data to the search ticket new component.
+          this.faq_card_details = data.message;
+          this.filtered_faq_card_details = data.message;
         }
         if (data.category == "error") {
           this.flashMessage.error({
@@ -118,35 +109,6 @@ fetch(common.TICKET_API_ALLTICKETS + `/${this.user_id}`, { // Edited by yukti ->
           message: "Internal Server Error",
         });
       });
-    // fetch(common.FAQ_API, {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     web_token: this.$store.getters.get_web_token,
-    //     user_id: this.user_id,
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data.category == "success") {
-    //       this.flashMessage.success({
-    //         message: `Total ${data.message.length} FAQs retrieved.`,
-    //       });
-    //       this.faq_card_details = data.message;
-    //       this.filtered_faq_card_details = data.message;
-    //     }
-    //     if (data.category == "error") {
-    //       this.flashMessage.error({
-    //         message: data.message,
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     this.$log.error(`Error : ${error}`);
-    //     this.flashMessage.error({
-    //       message: "Internal Server Error",
-    //     });
-    //   });
   },
   mounted() {},
   methods: {

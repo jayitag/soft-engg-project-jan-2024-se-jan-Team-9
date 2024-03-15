@@ -21,15 +21,16 @@
     </b-form>
 
     <!-- Ticket cards display -->
-    <div class="ticket-cards">
-      
-      <div style="height: 500px; overflow: auto; padding: 10px">
+    <b-container>
+        <b-row>
+          <b-col cols="12">
+            <div style="height: 500px; overflow: auto; padding: 20px;">
         <div v-for="ticket in filteredTickets" :key="ticket.ticket_id">
           <SupportStaffTicketCard
             :ticket_id="ticket.ticket_id"
             :created_on="ticket.created_on"
             :title="ticket.title"
-            :description="ticket.chat || ''"
+            :chat="ticket.chat || ''"
             :created_by="ticket.created_by"
             :support_staff_tag_id="ticket.support_staff_tag_id"
             :is_faq="ticket.is_faq"
@@ -38,8 +39,11 @@
           ></SupportStaffTicketCard>
         </div>
       </div>
+          </b-col>
+        </b-row>
+    </b-container>
+  
     </div>
-  </div>
 </template>
 
 <script>
