@@ -1,11 +1,11 @@
 <template>
   <div>
     <UserNavbar :id_="2"></UserNavbar>
-    <b-container fluid="xl">
+    <b-container fluid="xll" style="margin: 4%;">
       <b-row class="text-start">
         <b-col cols="12" sm="6" md="6">
           <h3 style="text-align: center">New Students</h3>
-          <div style="height: 550px; overflow: auto; padding: 10px">
+          <div style="height: 550px; overflow: auto; padding: 10px ;border: 2px solid black;">
             <div v-for="user in unverified_new_user" :key="user.user_id">
               <div v-if="user.role == 'student'">
                 <UserCard
@@ -20,9 +20,9 @@
             </div>
           </div>
         </b-col>
-        <b-col cols="12" sm="6" md="6" style="border-left: dashed black">
+        <b-col cols="12" sm="6" md="6">
           <h3 style="text-align: center">New Support Staff</h3>
-          <div style="height: 550px; overflow: auto; padding: 10px">
+          <div style="height: 550px; overflow: auto; padding: 10px; border: 2px solid  black;">
             <div v-for="user in unverified_new_user" :key="user.user_id">
               <div v-if="user.role == 'support'">
                 <UserCard
