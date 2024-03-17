@@ -36,7 +36,7 @@ const CHAT_API = `${BASEURL}${CHAT_API_PREFIX}`; // added  by Shubham
 
 const STUDENT_ROUTES = ['/student', '/student-home', "/student-create-ticket", "/student-my-tickets", "/common-faqs", "/user-profile"]
 const SUPPORT_ROUTES = ['/support', '/support-home', "/support-my-tickets", "/common-faqs", "/user-profile","/fetch_all_support_data" ]
-const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-validate-users", "/common-faqs", "/user-profile"]
+const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-validate-users", "/common-faqs", "/user-profile" , "/flag-ticket"]
 
 const STUDENT_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/student-home", active: false },

@@ -1,11 +1,12 @@
 <template>
+  
   <div class="chat_window">
-    <button class="close_button" @click="close()"">
+    <h3 class="card_title">Title: {{ ticket_title }}</h3>
+    <button class="close_button" @click="close()">
                                 <span class=" X"></span>
       <span class="Y"></span>
     </button>
     <div class="chatBox">
-
       <div class="chat_display">
         <div v-for="(value, key) in massages" :key="key">
           <p :class="['chat_bubble',  value.role]">{{ value.chat }} </p>
@@ -13,6 +14,7 @@
           <p :class="['chat_bubble_date_' + value.role]">{{ value.date_time }} </p>
         </div>
       </div>
+      
       <form id="chatInputForm">
         <b-row>
           <b-col cols="12" sm="9" md="10">
@@ -27,6 +29,7 @@
         </b-row>
       </form>
     </div>
+    
 
   </div>
 </template>
@@ -40,6 +43,7 @@ export default {
     tick_id: String,
     close_chat: Function,
     format_chat: Function,
+    ticket_title:String
   },
   data() {
     return {
@@ -70,7 +74,8 @@ export default {
         .then((data) => {
 
           if (data.category == "success") {
-            console.log("chat_fetched",data.message)
+            // console.log("chat_fetched",data.message)
+            console.log(this.ticket_title)
 
 
             var inputString = data.message;
@@ -367,5 +372,15 @@ export default {
   color: #00000073;
   font-size: 11px;
   top: -35px;
+}
+
+.card_title{
+  position: relative;
+    transform: translate(63%, 612%);
+    z-index: 1;
+    font-weight: bold;
+    width: 671px;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
 </style>

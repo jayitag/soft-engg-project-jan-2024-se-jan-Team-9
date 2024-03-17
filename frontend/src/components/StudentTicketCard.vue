@@ -50,7 +50,7 @@
         </div>
 
 
-        <ChatWindow v-if="displayChat" :format_chat="get_formated_ticket" :close_chat="closeChat" :chat="formated_chat" :tick_id="ticket_id"></ChatWindow>
+        <ChatWindow v-if="displayChat" :format_chat="get_formated_ticket" :close_chat="closeChat" :chat="formated_chat" :tick_id="ticket_id" :ticket_title="title"></ChatWindow>
     </div>
 </template>
 

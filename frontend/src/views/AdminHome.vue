@@ -33,6 +33,9 @@
           <InfoCard title="Total Support Staff" :value="n_support.toString()"></InfoCard>
           <InfoCard title="Total Admin" :value="n_admin.toString()"></InfoCard>
         </b-col>
+        <b-col cols="12" sm="5" md="4">
+          <a href="/flag-ticket"><InfoCard title="Total Flag Tickets" :value="'xxxxxx'"></InfoCard> <b-icon icon="arrow-right-square-fill" style="width: 45px; height: 45px;" id="link_icon"></b-icon></a>
+        </b-col>
       </b-row>
     </b-container>
 
@@ -95,6 +98,7 @@ export default {
           this.n_admin = data.message.n_admin;
           this.n_student_new = data.message.n_student_new;
           this.n_support_new = data.message.n_support_new;
+          console.log(data.message)
         }
         if (data.category == "error") {
           this.flashMessage.error({
@@ -122,4 +126,10 @@ export default {
 };
 </script>
 
-<style></style>
+<style>
+#link_icon{
+  position: relative; /* Change absolute to relative */
+  left: 78%; /* Adjust as necessary */
+  top: -51%; /* Adjust as necessary */
+}
+</style>
