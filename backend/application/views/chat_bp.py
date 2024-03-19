@@ -21,7 +21,7 @@ chat_api = Api(chat_bp)
 
 class chatAPI(Resource):
     @token_required
-    @users_required(users=["student","support"])
+    @users_required(users=["student","support", "admin"]) # admin added by Harman
     def get(self,ticket_id="",user_id=""):
         # return "hello"
 

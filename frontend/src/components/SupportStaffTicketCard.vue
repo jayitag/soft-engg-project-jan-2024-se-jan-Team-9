@@ -176,7 +176,8 @@ export default {
           web_token: this.$store.getters.get_web_token,
           user_id: this.user_id,
         },
-        body: JSON.stringify({ is_faq: "True", is_flag: this.is_flag, support_staff_tag_id: this.support_staff_tag_id, status: this.status }), // Include is_flag attribute in request body
+        body: JSON.stringify({ is_faq: "True", is_flag: this.is_flag, support_staff_tag_id: this.support_staff_tag_id, status: this.status, suggested_by_id: this.user_id }), // Include is_flag attribute in request body
+        //field "suggested_by_id" added by Harman
       })
         .then((response) => response.json())
         .then((data) => {

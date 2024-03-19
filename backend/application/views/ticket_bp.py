@@ -373,7 +373,7 @@ class TicketAPI(Resource):
                 raise Success_200(status_msg=f"Ticket created successfully. {message}")
 
     @token_required
-    @users_required(users=["student", "support"])
+    @users_required(users=["student", "support", "admin"]) #edited by Harman - added admin
     def put(self, ticket_id="", user_id=""):
         """
         Usage
@@ -399,6 +399,7 @@ class TicketAPI(Resource):
             "description": "",
            "is_flag":"",
            "is_faq":"",
+           "suggested_by_id": "", #by Harman
            "support_staff_tag_id":"",
            "type":"",
            "created_by":"",
@@ -513,6 +514,12 @@ class TicketAPI(Resource):
                 else:
                     ticket.is_flag = is_flag
                     ticket.is_faq=is_faq
+                    ## by Harman
+                    if details["suggested_by_id"]:
+                        suggested_by_id = details["suggested_by_id"]
+                        user = Auth.query.filter_by(user_id=suggested_by_id).first()
+                        ticket.suggested_by_name = user.first_name
+                    ############
                     ticket.support_staff_tag_id=support_staff_tag_id
                     ticket.status=status
                     # ticket.status = "resolved"
@@ -555,11 +562,21 @@ class TicketAPI(Resource):
 
                     raise Success_200(status_msg="Successfully resolved a ticket.")
 
-            if role == "admin":
+            if role == "admin": #by Harman
+                ticket = Ticket.query.filter_by(ticket_id=ticket_id).first()
+                ticket.is_faq = "False"
+                db.session.commit()
+                raise Success_200(status_msg="Suggestion deleted successfully")
+                
+                # try:
+                # except Exception as e:
+                #     print("I am here")
+                #     raise InternalServerError
+                
                 # admin dont have access
-                raise Unauthenticated(
-                    status_msg="Admin don't have access to this endpoint."
-                )
+                # raise Unauthenticated(
+                #     status_msg="Admin don't have access to this endpoint."
+                # )
 
     @token_required
     @users_required(users=["student"])
@@ -805,8 +822,68 @@ class AllTicketsUserAPI(Resource):
         return success_200_custom(data=all_tickets)
     
 
+##### by Harman; for FAQ marked tickets to Admin
+class AllTicketsAdminAPI(Resource):
+    @token_required
+    @users_required(users=["admin"])
+    def get(self, user_id=""):
+        # tickets retrieved based on user role.
 
+        if ticket_utils.is_blank(user_id):
+            raise BadRequest(status_msg="User id is missing.")
 
+        # get query arguments
+        try:
+            args = request.args.to_dict(flat=True)
+
+            args = ticket_utils.get_args_from_query(args)
+        except Exception as e:
+            logger.error(f"AllTickets->get : Error occured while resolving query : {e}")
+            raise InternalServerError
+        user = Auth.query.filter_by(
+            user_id=user_id
+        ).first()  # user already exists as user_required verified it
+
+        all_tickets = []
+
+        # verify user role
+        role = user.role
+
+        if role == "admin":
+            # admin : get all tickets resolved globally (for creating faq)
+            # status, priority, sort, filter will be as per filter options received
+            faq_tickets = Ticket.query.filter_by(is_faq="True").all()
+            for ticket in faq_tickets:
+                tick = ticket_utils.convert_ticket_to_dict(ticket)
+                all_tickets.append(tick)
+
+        all_tickets = ticket_utils.tickets_filter_sort(all_tickets, args)
+        logger.info(f"All tickets found : {len(all_tickets)}")
+
+        return success_200_custom(data=all_tickets)
+    
+    @token_required
+    @users_required(users=["admin"])
+    def put(self, ticket_id="", user_id=""):
+
+        """
+        Usage
+        -----
+        For admin to remove the ticket showing as suggestion 
+        by changing the value of flag is_faq FALSE
+        """
+
+        try:
+            ticket = Ticket.query.filter_by(ticket_id=ticket_id).first()
+            ticket.is_faq = False
+            db.session.commit()
+            raise Success_200(status_msg="Suggestion deleted successfully")
+        except Exception as e:
+            raise InternalServerError
+        
+
+#####
+    
 ticket_api.add_resource(
     TicketAPI,
     "/<string:ticket_id>/<string:user_id>",
@@ -814,6 +891,8 @@ ticket_api.add_resource(
 )  # path is /api/v1/ticket
 ticket_api.add_resource(AllTicketsAPI, "/all-tickets")
 ticket_api.add_resource(AllTicketsUserAPI, "/all-tickets/<string:user_id>")
+ticket_api.add_resource(AllTicketsAdminAPI, "/all-faq-tickets/<string:user_id>",
+                                            "/all-faq-tickets/<string:ticket_id>/<string:user_id>") #Harman
 # ticket_api.add_resource(AllSupportTicketsAPI, "/all-support-tickets/<string:user_id>")
 # ticket_api.add_resource(SupportStaffFlagAPI, "/support-staff-flag-api/<string:user_id>/<string:ticket_id>")
 
