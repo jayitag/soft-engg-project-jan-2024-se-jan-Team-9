@@ -34,7 +34,7 @@
           <InfoCard title="Total Admin" :value="n_admin.toString()"></InfoCard>
         </b-col>
         <b-col cols="12" sm="5" md="4">
-          <a href="/flag-ticket"><InfoCard title="Total Flag Tickets" :value="'xxxxxx'"></InfoCard> <b-icon icon="arrow-right-square-fill" style="width: 45px; height: 45px;" id="link_icon"></b-icon></a>
+          <a href="/flag-ticket"><InfoCard title="Total Flag Tickets" :value="n_flag.toString()"></InfoCard> <b-icon icon="arrow-right-square-fill" style="width: 45px; height: 45px;" id="link_icon"></b-icon></a>
         </b-col>
       </b-row>
     </b-container>
@@ -65,6 +65,7 @@ export default {
       n_student_new: 0,
       n_support_new: 0,
       n_user_new: 0,
+      n_flag: 0
     };
   },
   created() {
@@ -98,7 +99,9 @@ export default {
           this.n_admin = data.message.n_admin;
           this.n_student_new = data.message.n_student_new;
           this.n_support_new = data.message.n_support_new;
-          console.log(data.message)
+          this.n_flag = data.message.n_total_flag_tickets
+          // console.log(data.message)
+          console.log(data.message.n_flag)
         }
         if (data.category == "error") {
           this.flashMessage.error({

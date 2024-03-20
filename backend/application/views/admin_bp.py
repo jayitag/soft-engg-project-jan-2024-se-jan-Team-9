@@ -18,7 +18,9 @@ from application.views.user_utils import UserUtils
 from application.responses import *
 from application.models import *
 from application.globals import *
-
+from flask import jsonify, request
+import json
+from datetime import datetime
 
 # --------------------  Code  --------------------
 
@@ -188,6 +190,8 @@ class AdminAPI(Resource):
                     admin_dict["n_admin"] = n_admin
                     admin_dict["n_student_new"] = n_student_new
                     admin_dict["n_support_new"] = n_support_new
+                    n_total_flag_tickets = Ticket.query.filter_by(is_flag="True").count() ## added by Saranya
+                    admin_dict["n_total_flag_tickets"] = n_total_flag_tickets             ## added by Saranya
                     return success_200_custom(data=admin_dict)
                 else:
                     raise BadRequest(status_msg="User must be a Admin.")
@@ -222,6 +226,42 @@ class AdminAPI(Resource):
             admin_util.update_user_profile_data(user_id, form)
 
 
+class FlagTicketAPI(Resource):                                                     # added by Saran
+    def get(self):
+        flag_tickets = Ticket.query.filter_by(is_flag="True").all()
+        flag_tickets_data = []
+        for ticket in flag_tickets:
+            data =json.loads(ticket.chat)
+            dt_object = datetime.fromtimestamp(ticket.created_on)
+            formatted_date = dt_object.strftime("%d/%m/%Y %I:%M:%S %p")
+            ticket_data = {
+                "id": ticket.ticket_id,
+                "title":ticket.title,
+                "description":data[0]['chat'],
+                "created_on":formatted_date
+            }
+            flag_tickets_data.append(ticket_data)
+        return jsonify({"flagdata": flag_tickets_data})
+    
+    def put(self, id,):                                                         ## added by Saranya
+        ticket = Ticket.query.filter_by(ticket_id=id).first()
+ 
+        data = request.get_json()  # Get JSON data from request body
+        ticket.flag_type= data.get('flag_type')
+        ticket.is_flag= data.get('is_flag')
+        db.session.commit()
+        print(data)
+
+
+        ticket_data = {
+                "id": ticket.ticket_id,
+                "title":ticket.title,
+                "type":ticket.flag_type
+                
+            }
+        return jsonify({"flagdata": ticket_data})
+
 admin_api.add_resource(AdminAPI, "/<string:user_id>")  # path is /api/v1/admin
+admin_api.add_resource(FlagTicketAPI, "/flag", "/flag/<string:id>")
 
 # --------------------  END  --------------------

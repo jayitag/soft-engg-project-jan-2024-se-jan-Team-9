@@ -12,6 +12,7 @@ const TICKET_API_PREFIX = `/api/${VERSION}/ticket`;
 const CHAT_API_PREFIX = `/api/${VERSION}/chat`;    // added  by Shubham
 
 
+
 const AUTH_API_LOGIN = `${BASEURL}${AUTH_API_PREFIX}/login`
 const AUTH_API_REGISTER = `${BASEURL}${AUTH_API_PREFIX}/register`
 const AUTH_API_NEWUSERS = `${BASEURL}${AUTH_API_PREFIX}/newUsers`
@@ -84,5 +85,5 @@ export {
   ADMIN_NAV_BUTTONS,
   // TICKET_API_ALL_SUPPORT_TICKETS, // added by yukti
   // SUPPORT_STAFF_FLAG_API // added  by yukti
-  CHAT_API // added  by Shubham
+  CHAT_API, // added  by Shubham
 };

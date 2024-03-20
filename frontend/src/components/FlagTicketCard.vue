@@ -1,20 +1,22 @@
 <template>
     <div>
 
-        <div class="ticket_card_background">
+        <div class="ticket_card_background" v-if="show">
             <div class="ticket_card">
                 <b-container fluid="xll">
                     <b-row>
                         <b-col cols="12" sm="5" md="1">
                         </b-col>
                         <b-col cols="12" sm="5" md="8">
-                            <p style="font-weight: 500; font-size:x-large; margin: 0;">Title: F**K
+                            <p style="font-weight: 500; font-size:x-large; margin: 0;">Title: {{ title }}
                             </p>
                             <p style="font-weight: 200; font-size:large; margin: 0;">
-                                Description: You are a A@# $%^&* pice Of #$%^&%$%^&^%$#</p>
+                                Description: {{ chat }} </p>
                         </b-col>
-                        <b-col cols="12" sm="5" md="3" align-v="center">
-                            <p style="font-size: small;"> created_on: 13/3/2024 5:13:13 am </p>
+                        <b-col cols="12" sm="5" md="3" align-v="center" class="date_x_container">
+                            <b-icon icon="x-square" variant="danger" font-scale="1" class="close_x" @click="cancel"></b-icon>
+                            <p style="font-size: small;"> created_on: {{ created_on }} </p>
+                            
                         </b-col>
 
                     </b-row>
@@ -46,7 +48,7 @@
                         
                         </b-col>
                         <b-col cols="12" sm="5" md="3">
-                            <p style="color: blue; font-size: xx-small;">Ticekt ID:  f20d39020cacdeda80f81797c7c6a01a</p>
+                            <p style="color: blue; font-size: xx-small;">Ticekt ID:  {{ ticket_id }}</p>
                         </b-col>
                     </b-row>
 
@@ -60,37 +62,77 @@
 </template>
 
 <script>
-
+import * as common from "../assets/common.js";
 
 
 export default {
     name: "FlagTicketCard",
     components: { },
     props: [
-        // "ticket_id",
-        // "created_on",
-        // "title",
-        // "chat",
-        // "type",
-        // "status",
+        "ticket_id",
+        "created_on",
+        "title",
+        "chat",
     ],
     data() {
         return {
-            description: "",
-            formated_chat: "",
-            displayChat: false,
-            formated_created_on :"",
+           show:true 
         }
     },
-    created() {
-    },
+    created() {},
     methods: {
         commit(){
             const selectedOption = this.$el.querySelector('input[name="option"]:checked');
             if (selectedOption) {
-                console.log("Selected option:", selectedOption.value);
+                const payload = {
+                                    flag_type: selectedOption.value,  
+                                    is_flag: "False",
+                                };
+                fetch(common.ADMIN_API + `/flag/` + this.ticket_id, {
+                                                                        method: "PUT",
+                                                                        headers: {
+                                                                                    "Content-Type": "application/json",
+                                                                                    web_token: this.$store.getters.get_web_token,
+                                                                                    user_id: this.user_id,
+                                                                                },
+                                                                        body: JSON.stringify(payload),
+                                                                    })
+                                                                        .then((response) => response.json())
+                                                                        .then((data) => {
+                                                                                            {
+                                                                                            // console.log(data)
+                                                                                            this.ticketData = data.flagdata
+                                                                                            console.log(this.ticketData)
+                                                                                            this.show = false
+                                                                                            }
+                                                                                        })
             }
-            // submit the ticket form  with the input value and ticket id 
+            
+        },
+
+        cancel(){
+                    const payload = {
+                                         flag_type: "none",  
+                                         is_flag: "False",
+                                     };
+                    fetch(common.ADMIN_API + `/flag/` + this.ticket_id, {
+                                                    method: "PUT",
+                                                    headers: {
+                                                                "Content-Type": "application/json",
+                                                                web_token: this.$store.getters.get_web_token,
+                                                                user_id: this.user_id,
+                                                            },
+                                                    body: JSON.stringify(payload),
+                                                })
+                                                    .then((response) => response.json())
+                                                    .then((data) => {
+                                                                        {
+                                                                        // console.log(data)
+                                                                        this.ticketData = data.flagdata
+                                                                        console.log(this.ticketData)
+                                                                        }
+                                                                    })
+            this.show = false
         }
     }
 }
@@ -115,6 +157,14 @@ export default {
 input[type="radio"] {
         margin-right: 5px;
     }
+.date_x_container{
+    position: relative !important;
+    top: -13px;
+}
 
+.close_x{
+    position: relative;
+    left: 95%;
+}
 
 </style>
