@@ -9,7 +9,7 @@
           <div style="min-height: 550px; overflow: auto; padding: 10px">
             <SearchTicketNew
               :ticket_card_details="resolved_tickets"
-              
+
             ></SearchTicketNew>
           </div>
         </b-col>
@@ -22,12 +22,12 @@
 import UserNavbar from "../components/UserNavbar.vue";
 import * as common from "../assets/common.js";
 import InfoCard from "../components/InfoCard.vue";
-import SearchTicket from "../components/SearchTicket.vue";
+//import SearchTicket from "../components/SearchTicket.vue";
 import SearchTicketNew from "@/components/SearchTicketNew.vue"; 
 
 export default {
   name: "SupportHome",
-  components: { UserNavbar, InfoCard, SearchTicket , SearchTicketNew},
+  components: { UserNavbar, InfoCard, SearchTicketNew},
   data() {
     return {
       n_tickets_resolved: 0,

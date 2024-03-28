@@ -30,6 +30,7 @@ const TICKET_API_ALLTICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-tickets`;
 // const SUPPORT_STAFF_FLAG_API= `${BASEURL}${TICKET_API_PREFIX}/support-staff-flag-api`; 
 
 const CHAT_API = `${BASEURL}${CHAT_API_PREFIX}`; // added  by Shubham
+const TICKET_API_ALLFAQTICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-faq-tickets`; //added by Harman
 
 
 
@@ -38,6 +39,7 @@ const CHAT_API = `${BASEURL}${CHAT_API_PREFIX}`; // added  by Shubham
 const STUDENT_ROUTES = ['/student', '/student-home', "/student-create-ticket", "/student-my-tickets", "/common-faqs", "/user-profile"]
 const SUPPORT_ROUTES = ['/support', '/support-home', "/support-my-tickets", "/common-faqs", "/user-profile","/fetch_all_support_data" ]
 const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-validate-users", "/common-faqs", "/user-profile" , "/flag-ticket"]
+
 
 const STUDENT_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/student-home", active: false },
@@ -71,6 +73,7 @@ export {
   ADMIN_API_PREFIX,
   FAQ_API_PREFIX,
   TICKET_API_ALLTICKETS,
+  TICKET_API_ALLFAQTICKETS, // added by Harman
   TICKET_API_PREFIX,
   STUDENT_API,
   SUPPORT_API,

@@ -162,7 +162,7 @@ export default {
         event.preventDefault();
       }
 
-      if (this.user_role == "student" && this.check_title) {
+      if (this.user_role == "student" && !this.check_title) { //Harman - negated title condition
         alert("title should be atleast 5 characters long.");
       } 
       else {

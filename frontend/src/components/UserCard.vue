@@ -3,14 +3,12 @@
     <b-list-group>
       <b-list-group-item class="d-flex justify-content-between align-items-center">
         Name: {{ first_name }} {{ last_name }}
-        <b-button @click="verify_user" variant="outline-light">
-          <b-icon icon="check-square" scale="2" variant="success"></b-icon>
+        <b-button @click="verify_user" variant="outline-success" style="min-width: 80px;">Approve
         </b-button>
       </b-list-group-item>
       <b-list-group-item class="d-flex justify-content-between align-items-center">
         Email: {{ email }}
-        <b-button @click="not_verify_user" variant="outline-light">
-          <b-icon icon="x-circle" scale="2" variant="danger"></b-icon>
+        <b-button @click="not_verify_user" variant="outline-danger" style="min-width: 80px;">Reject
         </b-button>
       </b-list-group-item>
     </b-list-group>
