@@ -48,6 +48,8 @@ class Ticket(db.Model):
     # )  # low (default), medium, high
     is_flag=db.Column(db.String, default="False") # Edited by Yukti
     is_faq=db.Column(db.String, default="False") # Edited by Yukti
+    suggested_by_name = db.Column(db.String, nullable=True)
+
     support_staff_tag_id= db.Column(db.String, default="none")   # Edit by Saran
 
     # tag_1 = db.Column(db.String, nullable=False)
