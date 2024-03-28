@@ -47,6 +47,7 @@ class Ticket(db.Model):
     #     db.String, nullable=False, default="low"
     # )  # low (default), medium, high
     is_flag=db.Column(db.String, default="False") # Edited by Yukti
+    flag_type=db.Column(db.String, default="none")
     is_faq=db.Column(db.String, default="False") # Edited by Yukti
     suggested_by_name = db.Column(db.String, nullable=True)
 

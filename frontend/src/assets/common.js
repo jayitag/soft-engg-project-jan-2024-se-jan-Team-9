@@ -12,6 +12,7 @@ const TICKET_API_PREFIX = `/api/${VERSION}/ticket`;
 const CHAT_API_PREFIX = `/api/${VERSION}/chat`;    // added  by Shubham
 
 
+
 const AUTH_API_LOGIN = `${BASEURL}${AUTH_API_PREFIX}/login`
 const AUTH_API_REGISTER = `${BASEURL}${AUTH_API_PREFIX}/register`
 const AUTH_API_NEWUSERS = `${BASEURL}${AUTH_API_PREFIX}/newUsers`
@@ -36,8 +37,9 @@ const TICKET_API_ALLFAQTICKETS = `${BASEURL}${TICKET_API_PREFIX}/all-faq-tickets
 
 
 const STUDENT_ROUTES = ['/student', '/student-home', "/student-create-ticket", "/student-my-tickets", "/common-faqs", "/user-profile"]
-const SUPPORT_ROUTES = ['/support', '/support-home', "/support-my-tickets", "/common-faqs", "/user-profile", "/fetch_all_support_data"]
-const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-validate-users", "/common-faqs", "/user-profile"]
+const SUPPORT_ROUTES = ['/support', '/support-home', "/support-my-tickets", "/common-faqs", "/user-profile","/fetch_all_support_data" ]
+const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-validate-users", "/common-faqs", "/user-profile" , "/flag-ticket"]
+
 
 const STUDENT_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/student-home", active: false },
@@ -86,5 +88,5 @@ export {
   ADMIN_NAV_BUTTONS,
   // TICKET_API_ALL_SUPPORT_TICKETS, // added by yukti
   // SUPPORT_STAFF_FLAG_API // added  by yukti
-  CHAT_API // added  by Shubham
+  CHAT_API, // added  by Shubham
 };
