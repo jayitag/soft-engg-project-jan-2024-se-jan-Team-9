@@ -41,6 +41,7 @@ class Ticket(db.Model):
     ticket_id = db.Column(db.String, primary_key=True)
     title = db.Column(db.String, nullable=False)
     chat = db.Column(db.String(), nullable=True) # Edit by Saran
+    discourse_public_ticket_url = db.Column(db.String(), default="none")
 
     # solution = db.Column(db.String, nullable=True, default="")
     # priority = db.Column(

@@ -38,8 +38,9 @@ notification_template = """
 </head>
 <body>
     <p>Dear {{ data['username'] }},</p>
-    <p>&emsp;Your ticket with ticket ID :<b>{{ data['ticket_id'] }}</b> has been resolved by support team member.</p>
+    <p>&emsp;Your ticket with ticket ID :<b>{{ data['ticket_id'] }}</b> has been resolved.</p>
     <p>&emsp;Please login to your acccount and verify the solution.</p>
+    <p>&emsp;Feel free to comment on the ticket if need additional help.</p>
     </br>
     <p>Regards,</p>
     <p>OSTS Support Team</p>

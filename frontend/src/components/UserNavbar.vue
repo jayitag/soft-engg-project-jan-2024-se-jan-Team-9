@@ -5,35 +5,29 @@
       <b-navbar-toggle target="nav-collapse"></b-navbar-toggle>
       <b-collapse id="nav-collapse" is-nav>
         <b-navbar-nav>
-          <div class="buttons" v-for="b in nav_buttons" :key="b.id">
-            <b-button
-              variant="primary"
-              :to="{ path: b.link }"
-              @click="change_button_state(b.id)"
-              :style="{
-                boxShadow: b.active ? '5px 5px 15px 5px #a3a3a3' : 'none',
-                backgroundColor: b.active ? 'blue' : '#f8f9fa',
-                color: b.active ? 'white' : 'black',
-                borderColor: b.active ? '#007bff' : '#f8f9fa',
-                fontSize: b.active ? '18px' : '16px',
-              }"
-              >{{ b.title }}</b-button
-            >
+            <div v-for="b in nav_buttons" :key="b.id" class="buttons">
+            <b-button variant="primary" :to="{ path: b.link }" @click="change_button_state(b.id)" :style="{
+            boxShadow: b.active ? '5px 5px 15px 5px #a3a3a3' : 'none',
+            backgroundColor: b.active ? 'blue' : '#f8f9fa',
+            color: b.active ? 'white' : 'black',
+            borderColor: b.active ? '#007bff' : '#f8f9fa',
+            fontSize: b.active ? '18px' : '16px',
+          }">{{ b.title }}</b-button>
           </div>
+          <a href="http://localhost:4200/" target="_blank">
+          <b-button style=" background-color:#f8f9fa ; border-color: #f8f9fa; color: black; font-size: 16px; margin-left:15px; margin-top: 15px
+              ">Discourse</b-button></a>
+              <a @click="logout_user">
+                    <b-button style=" background-color:#f8f9fa ; border-color: #f8f9fa; color: black; font-size: 16px; margin-left:15px; margin-top: 15px
+              ">Logout</b-button></a>
+          
         </b-navbar-nav>
 
         <!-- Right aligned nav items -->
         <b-navbar-nav class="ml-auto">
-          <b-button
-            id="profile_pic"
-            :to="{ path: user_profile_page_url }"
-            @click="change_button_state(0)"
-            ><b-img
-              :src="profile_pic_base64"
-              v-bind="mainProps"
-              alt="Profile image"
-              style="margin: -6px -10px -12px -12px"
-            ></b-img>
+          <b-button id="profile_pic" :to="{ path: user_profile_page_url }" @click="change_button_state(0)"><b-img
+              :src="profile_pic_base64" v-bind="mainProps" alt="Profile image"
+              style="margin: -6px -10px -12px -12px"></b-img>
           </b-button>
         </b-navbar-nav>
       </b-collapse>
@@ -81,7 +75,7 @@ export default {
       }
     }
   },
-  mounted() {},
+  mounted() { },
   methods: {
     change_button_state(id_) {
       let current_title = "";
@@ -93,13 +87,12 @@ export default {
           b.active = false;
         }
       }
-      if (current_title === "Logout") {
-        // logout pressed
-        // On logout -> delete user data
-        this.$store.dispatch("set_state_after_logout", {});
-        this.$router.push("/login");
-      }
+      
     },
+    logout_user(){
+      this.$store.dispatch("set_state_after_logout", {});
+        this.$router.push("/login");
+    }
   },
   computed: {},
 };

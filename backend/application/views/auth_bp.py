@@ -5,8 +5,9 @@
 
 # --------------------  Imports  --------------------
 
+
 import os
-from flask import Blueprint, request
+from flask import Blueprint, request, jsonify
 from flask_restful import Api, Resource
 from application.logger import logger
 from application.responses import *
@@ -14,7 +15,9 @@ from application.models import Auth
 from application.globals import TOKEN_VALIDITY, BACKEND_ROOT_PATH
 from application.database import db
 import time
+import json
 from application.views.user_utils import UserUtils
+from application.discourse_integration.create_new_discourse_user import create_new_discourse_user
 from application.common_utils import (
     token_required,
     admin_required,
@@ -23,6 +26,9 @@ from application.common_utils import (
 )
 
 # --------------------  Code  --------------------
+
+
+
 
 
 class AuthUtils(UserUtils):
@@ -342,9 +348,14 @@ class NewUsers(Resource):
             if user:
                 # user exists , proceed to update
                 user = auth_utils.update_auth_table(details=details)
-                raise Success_200(status_msg="User verified and updated in database.")
+                create_new_discourse_user_status = create_new_discourse_user(user_id)
+               
+
+                
+                raise Success_200(status_msg="User verified and updated in database." + "   discourse_account_status: " + create_new_discourse_user_status)
             else:
                 raise NotFoundError(status_msg="User does not exists.")
+
 
     @token_required
     @admin_required

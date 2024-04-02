@@ -20,6 +20,7 @@ from application.common_utils import (
     get_encoded_file_details,
 )
 from application.views.user_utils import UserUtils
+from application.discourse_integration.post_public_ticket_on_discourse import post_public_ticket_on_discourse
 from application.responses import *
 from application.models import *
 from copy import deepcopy
@@ -212,6 +213,8 @@ class TicketUtils(UserUtils):
 
         # filter by status (if present)
         all_tickets = self.tickets_filter_by_status(all_tickets, args["status"])
+        all_tickets = self.tickets_filter_by_status(all_tickets, args["type"])
+
 
         # filter by priority (if present)
         all_tickets = self.tickets_filter_by_priority(all_tickets, args["priority"])
@@ -235,6 +238,8 @@ class TicketUtils(UserUtils):
         _args["sortby"] = args.get("sortby", "")
         _args["sortdir"] = args.get("sortdir", "")
         _args["status"] = convert_arg_to_list("filter_status")
+        _args["type"] = convert_arg_to_list("filter_type")
+
         _args["priority"] = convert_arg_to_list("filter_priority")
         _args["tags"] = convert_arg_to_list("filter_tags")
 
@@ -347,6 +352,16 @@ class TicketAPI(Resource):
                 )
 
             ticket_id = ticket_utils.generate_ticket_id(details["title"], user_id)
+            if details["type"] == "public":
+                result = post_public_ticket_on_discourse(Discourse_Username = user.discourse_username,
+                                                public_ticket_title = details["title"],
+                                                public_ticket_content = details["chat"],
+                                                public_ticket_category = details["catagory"]
+                                                )
+                if result == "failed":
+                    pass
+                else:
+                    details["discourse_public_ticket_url"] = result
             details["chat"] = "[" + "{" + "\"name\":\"" + user.first_name + " " + user.last_name + "\"," + "\"role\":\"" + user.role + "\"," + "\"chat\":\"" + details["chat"] + "\"," + "\"date_time\":\"" + str(time.time()) + "\"}"+ "]"
             details["ticket_id"] = ticket_id
             details["created_by"] = user_id
@@ -356,6 +371,7 @@ class TicketAPI(Resource):
             try:
                 db.session.add(ticket)
                 db.session.commit()
+                
             except Exception as e:
                 logger.error(
                     f"TicketAPI->post : Error occured while creating a new ticket : {e}"
@@ -663,8 +679,8 @@ class AllTicketsAPI(Resource):
         # user is student and is searching tickets while creating a new ticket.
         # get query arguments
         try:
-            args = request.args.to_dict(flat=True)
-            args = ticket_utils.get_args_from_query(args)
+            # args = request.args.to_dict(flat=True)
+            # args = ticket_utils.get_args_from_query(args)
             user_id = request.headers.get("user_id", "")
         except Exception as e:
             logger.error(f"AllTickets->get : Error occured while resolving query : {e}")
@@ -687,7 +703,7 @@ class AllTicketsAPI(Resource):
             tick = ticket_utils.convert_ticket_to_dict(ticket)
             all_tickets.append(tick)
 
-        all_tickets = ticket_utils.tickets_filter_sort(all_tickets, args)
+        # all_tickets = ticket_utils.tickets_filter_sort(all_tickets, args)
 
         logger.info(f"All tickets found : {len(all_tickets)}")
 

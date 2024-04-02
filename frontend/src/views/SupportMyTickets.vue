@@ -6,7 +6,7 @@
       <b-row class="text-start">
         <b-col cols="12" sm="7" md="12">
           <h3 style="text-align: center">Resolved Tickets</h3>
-          <div style="min-height: 550px; overflow: auto; padding: 10px">
+          <div style="min-height: 550px; overflow: auto; margin: 20px; padding: 10px; border: 2px solid black;">
             <SearchTicketNew
               :ticket_card_details="resolved_tickets"
 

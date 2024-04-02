@@ -5,14 +5,20 @@
     <b-container fluid="xll">
       <b-row class="text-start">
         <b-col cols="1"></b-col>
-        <b-col cols="6" style="border: 1px solid gray;" class="rounded">
+        <b-col cols="6">
           <h3 style="text-align: center"><br>Suggestions</h3>
-          <SearchTicketFAQ :ticket_card_details="resolved_tickets" />
+          <div style="height: 550px; overflow: auto; padding: 10px ;border: 2px solid black;">
+            <SearchTicketFAQ :ticket_card_details="resolved_tickets" />
+
+          </div>
         </b-col>
-        <b-col cols="1"></b-col>
-        <b-col cols="3" style="border: 1px solid gray;" class="rounded">
+        <!-- <b-col cols="1"></b-col> -->
+        <b-col cols="4">
           <h3 style="text-align: center"><br>Create FAQ</h3>
-          <FAQForm></FAQForm>
+          <div style="height: 550px; overflow: auto; padding: 10px ;border: 2px solid black;">
+            <FAQForm></FAQForm>
+
+          </div>
         </b-col>
         <b-col cols="1"></b-col>
       </b-row>

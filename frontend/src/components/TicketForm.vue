@@ -16,7 +16,7 @@
           required
         ></b-form-input>
         <b-form-invalid-feedback id="input-live-feedback-title">
-          Title should be atleast 5 characters long.
+          Title should be atleast 15 characters long.
         </b-form-invalid-feedback>
       </b-form-group>
 
@@ -124,6 +124,13 @@ export default {
       show: true,
     };
   },
+  watch: {
+    'form.title': function(newTitle, oldTitle) {
+      if (newTitle !== oldTitle) {
+        this.$emit("title-change", newTitle);
+      }
+    }
+  },
   created() {
 
   this.fetch_all_support_data();
@@ -163,7 +170,7 @@ export default {
       }
 
       if (this.user_role == "student" && !this.check_title) { //Harman - negated title condition
-        alert("title should be atleast 5 characters long.");
+        alert("title should be atleast 15 characters long.");
       } 
       else {
         alert('Submitting form. Click "Ok" to proceed?');
@@ -225,7 +232,7 @@ export default {
   computed: {
     check_title() {
       console.log(this.form.title.length)
-      return this.form.title.length > 5 ? false : true;
+      return this.form.title.length < 20 ? false : true;
     },
   },
 };

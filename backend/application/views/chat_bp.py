@@ -84,16 +84,34 @@ class chatAPI(Resource):
             raise InternalServerError
         else:
             if ticket:
-                user = Auth.query.filter_by(user_id=user_id).first()
-                if user_id == ticket.created_by or user.role == "student":
+                commented_by_user = Auth.query.filter_by(user_id=user_id).first()
+                if user_id == ticket.created_by or commented_by_user.role == "student":
                     ticket.status= "unresolved"
-                    ticket.chat = str(ticket.chat[:-1]) + str(",") + str("{") + str("\"name\":\"") + str(user.first_name) + str(" ") + str(user.last_name) + str("\",") + str("\"role\":\"") + str(user.role) + str("\",") + str("\"chat\":\"") + str(details["new_message"]) + str("\",") + str("\"date_time\":\"") + str(time.time()) + str("\"}") + str("]")
+                    ticket.chat = str(ticket.chat[:-1]) + str(",") + str("{") + str("\"name\":\"") + str(commented_by_user.first_name) + str(" ") + str(commented_by_user.last_name) + str("\",") + str("\"role\":\"") + str(commented_by_user.role) + str("\",") + str("\"chat\":\"") + str(details["new_message"]) + str("\",") + str("\"date_time\":\"") + str(time.time()) + str("\"}") + str("]")
                     db.session.commit()
                     return success_200_custom(data=ticket.chat)
                 elif user.role == "support":
                     ticket.status= "resolved"
-                    ticket.chat = str(ticket.chat[:-1]) + str(",") + str("{") + str("\"name\":\"") + str(user.first_name) + str(" ") + str(user.last_name) + str("\",") + str("\"role\":\"") + str(user.role) + str("\",") + str("\"chat\":\"") + str(details["new_message"]) + str("\",") + str("\"date_time\":\"") + str(time.time()) + str("\"}") + str("]")
+                    ticket.chat = str(ticket.chat[:-1]) + str(",") + str("{") + str("\"name\":\"") + str(commented_by_user.first_name) + str(" ") + str(commented_by_user.last_name) + str("\",") + str("\"role\":\"") + str(commented_by_user.role) + str("\",") + str("\"chat\":\"") + str(details["new_message"]) + str("\",") + str("\"date_time\":\"") + str(time.time()) + str("\"}") + str("]")
                     db.session.commit()
+                    try:
+                        users_email_name = []
+                        ticeket_created_by_user = Auth.query.filter_by(user_id = ticket.created_by).first()
+                        users_email_name.append(
+                                {
+                                    "email": ticeket_created_by_user.email,
+                                    "first_name": ticeket_created_by_user.first_name,
+                                    "ticket_id": ticket_id,
+                                })
+                        resp = send_email(
+                            to=users_email_name,
+                            _from=commented_by_user.email,
+                            sub="Your ticket is resolved",
+                        )
+                    except Exception as e:
+                        logger.error(
+                            f"TicketAPI->send mail : Error occured while sending notification : {e}"
+                        )
                     return success_200_custom(data=ticket.chat)
 
                 

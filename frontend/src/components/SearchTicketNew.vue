@@ -2,7 +2,7 @@
   <div class="search-ticket-form">
     <!-- Search form -->
     <b-form @submit.prevent="onSubmit" class="search-form">
-      <b-container class="search-filters">
+      <b-container class="search-filters" fluid="xll">
         <b-row>
           <b-col cols="12">
             <b-form-group>
@@ -21,7 +21,7 @@
     </b-form>
 
     <!-- Ticket cards display -->
-    <b-container>
+    <b-container fluid="xll">
         <b-row>
           <b-col cols="12">
             <div style="height: 500px; overflow: auto; padding: 20px;">

@@ -1,7 +1,7 @@
 <template>
     <div>
 
-        <div :class="'ticket_card_background_' + status ">
+        <div :class="'ticket_card_background_' + status " v-show="type == 'private'">
             <div class="ticket_card">
                 <b-container fluid="xll">
                     <b-row>
@@ -48,7 +48,55 @@
                 </b-container>
             </div>
         </div>
+        <div class="discourse_background"  v-show="type == 'public'">
+            <div class="ticket_card">
+                <b-container fluid="xll">
+                    <b-row>
+                        <b-col cols="12" sm="5" md="1">
+                            <img src="../../public/discourse_logo.png" style="height: 20px; width: 20px;">
+                        </b-col>
+                        <b-col cols="12" sm="5" md="8">
+                            <p style="font-weight: 500; font-size:x-large; margin: 0;">Title: {{ title }}
+                            </p>
+                            <p style="font-weight: 200; font-size:large; margin: 0;">
+                                Description:{{ description }}</p>
+                        </b-col>
+                        <b-col cols="12" sm="5" md="3" align-v="center">
+                            <p style="font-size: small;"> created_on: {{ formated_created_on }} </p>
+                        </b-col>
 
+                    </b-row>
+                    <b-row style="margin-top:30px ;">
+                        <b-col cols="12" sm="5" md="1">
+                        </b-col>
+                        <b-col cols="12" sm="5" md="9">
+                            <a :href="public_ticket_url" target="_blank">
+                            <b-button variant="outline-primary"> 
+                                <img src="../../public/discourse_logo.png" style="height: 15px; width: 15px; opacity: 50%;">
+                                Comment
+                                </b-button> </a>
+                            </b-col>
+                                <b-col cols="12" sm="5" md="2">
+                            <p style="color: blue; font-size: smaller;">Type: {{ type }}</p>
+                            <!-- <p style="color: blue; font-size: xx-small;">Ticekt ID: {{ ticket_id }}</p> -->
+                        </b-col>
+                        <!-- <b-col cols="12" sm="5" md="2">
+                            <p style="color: blue; font-size: smaller;">Ticekt ID: {{ ticket_id }}</p>
+                        </b-col> -->
+
+                    </b-row>
+                    <b-row style="margin: 0;">
+                        <b-col cols="12" sm="5" md="9">
+
+                        </b-col>
+                        <b-col cols="12" sm="5" md="3">
+                            <p style="color: blue; font-size: xx-small;">Ticekt ID: {{ ticket_id }}</p>
+                        </b-col>
+                    </b-row>
+
+                </b-container>
+            </div>
+        </div>
 
         <ChatWindow v-if="displayChat" :format_chat="get_formated_ticket" :close_chat="closeChat" :chat="formated_chat" :tick_id="ticket_id" :ticket_title="title"></ChatWindow>
     </div>
@@ -69,6 +117,7 @@ export default {
         "chat",
         "type",
         "status",
+        "public_ticket_url"
     ],
     data() {
         return {
@@ -145,5 +194,10 @@ export default {
     background-color: rgba(224, 99, 9, 0.599);
     margin-top: 20px;
 
+}
+
+.discourse_background{
+    background-color: rgb(116, 116, 235);
+    margin-top: 15px;
 }
 </style>

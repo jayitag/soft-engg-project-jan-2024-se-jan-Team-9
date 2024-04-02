@@ -1,6 +1,6 @@
 <template>
   <div>
-    <b-container class="faq-card-container">
+    <b-container class="faq-card-container" fluid="xll">
       <b-row class="row" @click="questionClicked">
         <b-col class="col" cols="11" lg="11" sm="11"> <b> Question : </b> {{ question }}</b-col>
       </b-row>

@@ -70,15 +70,18 @@ class StudentAPI(Resource):
                         created_by=user_id, status="resolved"
                     ).count()
                     n_tickets_pending = n_tickets_created - n_tickets_resolved
-                    n_tickets_upvoted = TicketVote.query.filter_by(
-                        user_id=user_id
+                    n_tickets_private = Ticket.query.filter_by(
+                        created_by=user_id, type="private"
+                    ).count()
+                    n_tickets_public = Ticket.query.filter_by(
+                        created_by=user_id, type="public"
                     ).count()
                     student_dict = student_util.convert_user_data_to_dict(user)
                     student_dict["n_tickets_created"] = n_tickets_created
                     student_dict["n_tickets_resolved"] = n_tickets_resolved
                     student_dict["n_tickets_pending"] = n_tickets_pending
-                    student_dict["n_tickets_upvoted"] = n_tickets_upvoted
-
+                    student_dict["n_tickets_private"] = n_tickets_private  # add private and public tickets option -Pragati
+                    student_dict["n_tickets_public"] = n_tickets_public
                     return success_200_custom(data=student_dict)
                 else:
                     raise BadRequest(status_msg="User must be a student.")

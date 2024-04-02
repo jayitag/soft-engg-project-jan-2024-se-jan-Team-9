@@ -8,17 +8,25 @@
         <b-col cols="12" sm="5" md="8">
           <!-- <h3 style="text-align: center">My Unresolved Tickets</h3> -->
           <b-nav style="margin: 1px;">
+
             <b-nav-item @click="all_tickets_filter()" :style="all_tickets_filter_style">All Tickets</b-nav-item>
+
             <b-nav-item @click="resolved_tickets_filter()" :style="resolved_tickets_filter_style">Resolved
               Tickets</b-nav-item>
             <b-nav-item @click="unresolved_tickets_filter()" :style="unresolved_tickets_filter_style">Unresolved
               Tickets</b-nav-item>
+            <b-nav-item @click="public_tickets_filter()" :style="public_tickets_filter_style">Public
+              Tickets</b-nav-item>
           </b-nav>
           <div style="height: 550px; border: 2px solid black; overflow: auto; padding: 10px">
+            <div v-if="!(this.filtered_ticket_card_details.length > 0)"
+              style="padding: 10px; background-color: #f8d7da; color: #721c24; border: 1px solid #f5c6cb; border-radius: 4px;">
+              No tickets are created yet.
+            </div>
             <div v-for="ticket in filtered_ticket_card_details" :key="ticket.ticket_id">
 
               <StudentTicketCard :ticket_id="ticket.ticket_id" :created_on="ticket.created_on" :title="ticket.title"
-                :chat="ticket.chat" :type="ticket.type" :status="ticket.status"></StudentTicketCard>
+                :chat="ticket.chat" :type="ticket.type" :status="ticket.status" :public_ticket_url="ticket.discourse_public_ticket_url"></StudentTicketCard>
             </div>
           </div>
         </b-col>
@@ -30,12 +38,13 @@
             <InfoCard title="tickets created" :value="n_tickets_created.toString()"></InfoCard>
             <InfoCard title="tickets resolved" :value="n_tickets_resolved.toString()"></InfoCard>
             <InfoCard title="tickets pending" :value="n_tickets_pending.toString()"></InfoCard>
-            <InfoCard title="tickets upvoted" :value="n_tickets_upvoted.toString()"></InfoCard>
+            <InfoCard title="tickets public" :value="n_tickets_public.toString()"></InfoCard>
+            <InfoCard title="tickets private" :value="n_tickets_private.toString()"></InfoCard>
           </div>
         </b-col>
       </b-row>
     </b-container>
-  
+
     <br />
   </div>
 </template>
@@ -56,13 +65,16 @@ export default {
       n_tickets_created: 0,
       n_tickets_resolved: 0,
       n_tickets_pending: 0,
-      n_tickets_upvoted: 0,
+      n_tickets_public: 0,
+      n_tickets_private: 0,
       user_id: this.$store.getters.get_user_id,
       ticket_card_details: [],
       filtered_ticket_card_details: [],
       all_tickets_filter_style: "text-decoration: underline 4px solid black;",
       resolved_tickets_filter_style: "",
-      unresolved_tickets_filter_style: ""
+      unresolved_tickets_filter_style: "",
+      public_tickets_filter_style: "",
+  
     };
   },
   created() {
@@ -85,7 +97,8 @@ export default {
           this.n_tickets_created = data.message.n_tickets_created;
           this.n_tickets_resolved = data.message.n_tickets_resolved;
           this.n_tickets_pending = data.message.n_tickets_pending;
-          this.n_tickets_upvoted = data.message.n_tickets_upvoted;
+          this.n_tickets_private = data.message.n_tickets_private;
+          this.n_tickets_public = data.message.n_tickets_public;
         }
         if (data.category == "error") {
           this.flashMessage.error({
@@ -101,35 +114,7 @@ export default {
       });
 
     this.get_all_ticket_data()
-    // fetch(common.TICKET_API_ALLTICKETS + `/${this.user_id}`, {
-    //   method: "GET",
-    //   headers: {
-    //     "Content-Type": "application/json",
-    //     web_token: this.$store.getters.get_web_token,
-    //     user_id: this.user_id,
-    //   },
-    // })
-    //   .then((response) => response.json())
-    //   .then((data) => {
-    //     if (data.category == "success") {
-    //       this.flashMessage.success({
-    //         message: `Total ${data.message.length} Tickets retrieved.`,
-    //       });
-
-    //       this.ticket_card_details = data.message.all_tickets;
-    //     }
-    //     if (data.category == "error") {
-    //       this.flashMessage.error({
-    //         message: data.message,
-    //       });
-    //     }
-    //   })
-    //   .catch((error) => {
-    //     this.$log.error(`Error : ${error}`);
-    //     this.flashMessage.error({
-    //       message: "Internal Server Error",
-    //     });
-    //   });
+  
   },
   mounted() { },
   methods: {
@@ -137,6 +122,7 @@ export default {
       this.all_tickets_filter_style = "text-decoration: underline 4px solid black;"
       this.resolved_tickets_filter_style = ""
       this.unresolved_tickets_filter_style = ""
+      this.public_tickets_filter_style = ""
       this.filtered_ticket_card_details = this.ticket_card_details
 
     },
@@ -144,22 +130,37 @@ export default {
       this.all_tickets_filter_style = ""
       this.resolved_tickets_filter_style = "text-decoration: underline 4px solid black;"
       this.unresolved_tickets_filter_style = ""
+      this.public_tickets_filter_style = ""
       this.filtered_ticket_card_details = []
       for (let ticket of this.ticket_card_details) {
-        if (ticket.status == 'resolved') {
+        if (ticket.type == 'private' && ticket.status == 'resolved' ) {
           this.filtered_ticket_card_details.push(ticket)
         }
       }
-    
+
     },
     unresolved_tickets_filter() {
       this.all_tickets_filter_style = ""
       this.resolved_tickets_filter_style = ""
       this.unresolved_tickets_filter_style = "text-decoration: underline 4px solid black;"
+      this.public_tickets_filter_style = ""
       this.filtered_ticket_card_details = this.ticket_card_details
       this.filtered_ticket_card_details = []
       for (let ticket of this.ticket_card_details) {
-        if (ticket.status == 'unresolved') {
+        if (ticket.type == 'private' && ticket.status == 'unresolved') {
+          this.filtered_ticket_card_details.push(ticket)
+        }
+      }
+    },
+    public_tickets_filter(){
+      this.all_tickets_filter_style = ""
+      this.resolved_tickets_filter_style = ""
+      this.unresolved_tickets_filter_style = ""
+      this.public_tickets_filter_style = "text-decoration: underline 4px solid black;"
+      this.filtered_ticket_card_details = this.ticket_card_details
+      this.filtered_ticket_card_details = []
+      for (let ticket of this.ticket_card_details) {
+        if (ticket.type == 'public') {
           this.filtered_ticket_card_details.push(ticket)
         }
       }

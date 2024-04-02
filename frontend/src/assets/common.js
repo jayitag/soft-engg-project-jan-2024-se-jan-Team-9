@@ -44,24 +44,26 @@ const ADMIN_ROUTES = ['/admin', '/admin-home', "/admin-create-faq", "/admin-vali
 const STUDENT_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/student-home", active: false },
   { id: 2, title: "Create Ticket", link: "/student-create-ticket", active: false },
-  { id: 6, title: "Discourse", link: "#", active: false },    //-edited by shubham.
+  // { id: 6, title: "Discourse", link: "http://localhost:4200/", active: false },    //-edited by shubham.
   { id: 4, title: "FAQs", link: "/common-faqs", active: false },
-  { id: 5, title: "Logout", link: "#", active: false },
+  // { id: 5, title: "Logout", link: "#", active: false },
 ]
 
 const SUPPORT_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/support-home", active: false },
   { id: 2, title: "My Tickets", link: "/support-my-tickets", active: false },
+  // { id: 6, title: "Discourse", link: "http://localhost:4200/", active: false },    //-edited by shubham.
   { id: 3, title: "FAQs", link: "/common-faqs", active: false },
-  { id: 4, title: "Logout", link: "#", active: false },
+  // { id: 4, title: "Logout", link: "#", active: false },
 ]
 
 const ADMIN_NAV_BUTTONS = [
   { id: 1, title: "Home", link: "/admin-home", active: false },
   { id: 2, title: "Validate Users", link: "/admin-validate-users", active: false },
   { id: 3, title: "Create FAQ", link: "/admin-create-faq", active: false },
+  // { id: 6, title: "Discourse", link: "http://localhost:4200/", active: false },    //-edited by shubham.
   { id: 4, title: "FAQs", link: "/common-faqs", active: false },
-  { id: 5, title: "Logout", link: "#", active: false },
+  // { id: 5, title: "Logout", link: "#", active: false },
 ]
 
 export {

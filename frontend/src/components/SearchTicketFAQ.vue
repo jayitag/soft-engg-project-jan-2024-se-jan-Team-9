@@ -3,10 +3,10 @@ tickets for flag which are already resolved -->
 <template>
     <div class="search-ticket-form">
       <!-- Search form -->
-      <b-form @submit.prevent="onSubmit" class="search-form">
-        <b-container class="search-filters">
+        <b-container class="search-filters" fluid="xll">
           <b-row>
             <b-col cols="12">
+              <b-form @submit.prevent="onSubmit" class="search-form">
               <b-form-group>
                 <label for="input-query">Search resolved tickets:</label>
                 <b-form-input
@@ -16,10 +16,11 @@ tickets for flag which are already resolved -->
                   placeholder="Enter search query"
                 ></b-form-input>
               </b-form-group>
+            </b-form>
+
             </b-col>
           </b-row>
         </b-container>
-    </b-form>
   
     <!-- Ticket cards display -->
     <b-container>

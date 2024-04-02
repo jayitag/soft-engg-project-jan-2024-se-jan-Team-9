@@ -1,6 +1,6 @@
 <template>
   <div :key="componentKey">
-    <b-container class="ticket-card-container" v-show="!ticket_deleted" :style="{
+    <b-container class="ticket-card-container" fluid="xll" v-show="!ticket_deleted" :style="{
     'background-color': getBackgroundColor()
   }">
       <b-row class="row" @click="getTicketDetails">
