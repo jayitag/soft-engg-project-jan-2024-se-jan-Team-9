@@ -6,7 +6,7 @@
       <b-row class="text-start">
         <b-col cols="12" sm="7" md="8">
           <h3 style="text-align: center">Unresolved Tickets</h3>
-          <div style="height: 80 vh; overflow: auto; padding: 10px; border: 2px solid black;">
+          <div style="height: 80 vh; padding: 10px; border: 2px solid black;">
             <SearchTicketNew
               
               :ticket_card_details="unresolved_tickets"

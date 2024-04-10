@@ -6,6 +6,7 @@
         <b-col cols="12" sm="6" md="6">
           <h3 style="text-align: center">New Students</h3>
           <div style="height: 550px; overflow: auto; padding: 10px ;border: 2px solid black;">
+            <h2 v-if="noNewStudent"> No New Student Validation Request</h2>
             <div v-for="user in unverified_new_user" :key="user.user_id">
               <div v-if="user.role == 'student'">
                 <UserCard
@@ -23,6 +24,7 @@
         <b-col cols="12" sm="6" md="6">
           <h3 style="text-align: center">New Support Staff</h3>
           <div style="height: 550px; overflow: auto; padding: 10px; border: 2px solid  black;">
+            <h2 v-if="noNewSupport"> No New Suport Staff Validation Request</h2>
             <div v-for="user in unverified_new_user" :key="user.user_id">
               <div v-if="user.role == 'support'">
                 <UserCard
@@ -56,6 +58,8 @@ export default {
     return {
       user_id: this.$store.getters.get_user_id,
       unverified_new_user: [],
+      noNewStudent:true,
+      noNewSupport:true
     };
   },
   created() {
@@ -78,6 +82,12 @@ export default {
         if (data.category == "success") {
           this.unverified_new_user = data.message;
           if (this.unverified_new_user.length > 0) {
+
+            for (let i = 0; i < this.unverified_new_user.length; i++){
+             if(this.unverified_new_user[i].role === 'student'){ this.noNewStudent = false}
+             if(this.unverified_new_user[i].role === 'support'){ this.noNewSupport = false}
+            }
+
             this.flashMessage.success({
               message: `${this.unverified_new_user.length} unverified users found.`,
             });

@@ -3,6 +3,7 @@
       <UserNavbar :id_="1"></UserNavbar>
 
       <div class="container">
+        <h1 v-if="empty" style="margin-top: 40px;">No Flag Tickets Found</h1>
         <FlagTicketCard v-for="i in ticketData"
         :ticket_id="i.id"
         :created_on="i.created_on"
@@ -26,7 +27,8 @@
     components: { UserNavbar, FlagTicketCard  },
     data() {
       return {
-        ticketData:''
+        ticketData:'',
+        empty:false
       };
     },
     created() {
@@ -47,7 +49,10 @@
         {
           // console.log(data)
           this.ticketData = data.flagdata
-          console.log(this.ticketData)
+          // console.log(this.ticketData)
+          // console.log(this.ticketData.length)
+          if (this.ticketData.length === 0){ this.empty = true}
+
         }
       })
     
@@ -55,7 +60,8 @@
 
 
       // 
-    }
+    },
+    
     
   };
   </script>

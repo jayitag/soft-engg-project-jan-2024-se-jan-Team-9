@@ -1,6 +1,11 @@
 <template>
   <div :key="componentKey">
+<<<<<<< Updated upstream
     <b-container class="ticket-card-container" v-show="!ticket_deleted" :style="{
+=======
+    <ChatWindow v-if="displayChat" :format_chat="get_formated_ticket" :close_chat="closeChat" :chat="formated_chat" :tick_id="ticket_id" :ticket_title="title"></ChatWindow>
+    <b-container class="ticket-card-container" fluid="xll" v-show="!ticket_deleted" :style="{
+>>>>>>> Stashed changes
     'background-color': getBackgroundColor()
   }">
       <b-row class="row" @click="getTicketDetails">
@@ -36,7 +41,7 @@
         </b-col>
       </b-row>
     </b-container>
-    <ChatWindow v-if="displayChat" :format_chat="get_formated_ticket" :close_chat="closeChat" :chat="formated_chat" :tick_id="ticket_id"></ChatWindow>
+    
 
   </div>
 </template>
