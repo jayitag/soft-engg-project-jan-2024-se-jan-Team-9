@@ -335,6 +335,9 @@ class TicketAPI(Resource):
         try:
             form = request.get_json()
             attachments = form.get("attachments", [])
+            is_attachment = False
+            if attachments:
+                is_attachment = True
             for key in details:
                 value = form.get(key, "")
                 if ticket_utils.is_blank(value):
@@ -362,31 +365,38 @@ class TicketAPI(Resource):
                     pass
                 else:
                     details["discourse_public_ticket_url"] = result
-            details["chat"] = "[" + "{" + "\"name\":\"" + user.first_name + " " + user.last_name + "\"," + "\"role\":\"" + user.role + "\"," + "\"chat\":\"" + details["chat"] + "\"," + "\"date_time\":\"" + str(time.time()) + "\"}"+ "]"
+            details["chat"] = "[" + "{" + "\"name\":\"" + user.first_name + " " + user.last_name + "\"," + "\"role\":\"" + user.role + "\"," + "\"chat\":\"" + details["chat"] + "\"," + "\"date_time\":\"" + str(time.time()) + "\"," + "\"is_attachment\":\"" + str(is_attachment) + "\"}"+ "]"
             details["ticket_id"] = ticket_id
             details["created_by"] = user_id
             details["created_on"] = int(time.time())
             ticket = Ticket(**details)
 
-            try:
-                db.session.add(ticket)
-                db.session.commit()
+            db.session.add(ticket)
+            db.session.commit()
                 
+            try:
+                    ticket_created = Ticket.query.filter_by(ticket_id = ticket_id).first()
+                    resp = send_email(
+                        occasion= "ticket_creation",
+                        to=[{"email": user.email, "username": user.first_name}],
+                        _from= "admin@gmail.com",
+                        subject="Your ticket was succefully created",
+                        data={ "username": user.first_name, "ticket_id": ticket_id, "type": ticket_created.type, "ticket_category": ticket_created.catagory, "discourse_url": ticket_created.discourse_public_ticket_url}
+                        )
             except Exception as e:
-                logger.error(
-                    f"TicketAPI->post : Error occured while creating a new ticket : {e}"
-                )
-                raise InternalServerError(
-                    status_msg="Error occured while creating a new ticket"
-                )
-            else:
-                logger.info("Ticket created successfully.")
+                    logger.error(
+                        f"TicketAPI->post : Error occured while sending  new ticket mail : {e}"
+                    )
+                    raise InternalServerError(
+                        status_msg="Error occured while sending new ticket creation mail"
+                    )
+            logger.info("Ticket created successfully.")
 
-                # add attachments now
-                status, message = ticket_utils.save_ticket_attachments(
-                    attachments, ticket_id, user_id, operation="create_ticket"
-                )
-                raise Success_200(status_msg=f"Ticket created successfully. {message}")
+            # add attachments now
+            status, message = ticket_utils.save_ticket_attachments(
+                            attachments, ticket_id, user_id, operation="create_ticket"
+                            )
+            raise Success_200(status_msg=f"Ticket created successfully. {message}")
 
     @token_required
     @users_required(users=["student", "support", "admin"]) #edited by Harman - added admin

@@ -74,7 +74,7 @@
         </b-row>
       </b-container>
 
-      <FileUpload @file_uploading="onFileUpload"></FileUpload>
+      <FileUpload @file_uploading="onFileUpload" v-show="form.type === 'private'"></FileUpload>
 
       <br />
       <br />

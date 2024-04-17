@@ -24,7 +24,7 @@
     <b-container fluid="xll">
         <b-row>
           <b-col cols="12">
-            <div style="height: 500px; overflow: auto; padding: 20px;">
+            <div style="height: 500px;  overflow: auto; padding: 20px;">
         <div v-for="ticket in filteredTickets" :key="ticket.ticket_id">
           <SupportStaffTicketCard
             :ticket_id="ticket.ticket_id"

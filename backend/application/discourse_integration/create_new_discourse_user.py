@@ -1,6 +1,8 @@
 from application.models import *
 from application.discourse_integration.discourse_config import *
 import json
+from application.notifications import send_email
+from application.logger import logger
 
 def create_new_discourse_user(user_id):
         user = Auth.query.filter_by(user_id=user_id).first()
@@ -34,6 +36,20 @@ def create_new_discourse_user(user_id):
                     user.discourse_id = output['user_id']
                     user.discourse_username = username
                     db.session.commit()
+                    
+                    
+                    try:
+                        resp = send_email(
+                            occasion= "account_approval",
+                            to=[{"email": email, "username": name}],
+                             _from= "admin@gmail.com",
+                            subject="Account is now active!",
+                            data={"username": name, "discourse_username": username, "discourse_password":password}
+                        )
+                    except Exception as e:
+                         logger.error(
+                            f"Register->send mail : Error occurred while sending registration email : {e}"
+                        )
                     
                     return "success"
                 if output['active'] == False:

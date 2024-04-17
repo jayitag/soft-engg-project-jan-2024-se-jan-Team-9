@@ -23,6 +23,9 @@ export default new Vuex.Store({
     get_user: function (state) {
       return state.user
     },
+    get_user_email: function (state) {
+      return state.user.email
+    },
     get_user_name: function(state) {
       return state.user.first_name + " " + state.user.last_name
     },

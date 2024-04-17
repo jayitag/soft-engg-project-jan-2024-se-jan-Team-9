@@ -15,7 +15,7 @@
             required
           ></b-form-input>
           <b-form-invalid-feedback id="input-live-feedback-first-name">
-            Enter at least 3 letters of first name
+            Enter at least 11 letters of first name
           </b-form-invalid-feedback>
         </b-form-group>
 
@@ -59,8 +59,8 @@
             required
           ></b-form-input>
           <b-form-invalid-feedback id="input-live-feedback-password">
-            Password should contain letters A-Z a-z and numbers 0-9 only and should be atleast 4 and
-            atmost 8 characters long.
+            Password should contain letters A-Z a-z and numbers 0-9 only and should be atleast 9 and
+            atmost 15 characters long.
           </b-form-invalid-feedback>
         </b-form-group>
 
@@ -166,11 +166,11 @@ export default {
   },
   computed: {
     check_name() {
-      return this.form.first_name.length > 2 ? true : false;
+      return this.form.first_name.length > 10 ? true : false;
     },
     check_password() {
       let password = this.form.password;
-      if (password.length < 4 || password.length > 9) {
+      if (password.length < 9 || password.length > 15) {
         return false;
       }
       const valid_char_array = Array.from(

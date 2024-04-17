@@ -17,7 +17,7 @@
             <div v-for="ticket in ticket_card_details" :key="ticket.ticket_id">
               <template v-if="ticket.type === 'public' && ticket.title.toLowerCase().includes(ticketTitle.toLowerCase())">
                 <StudentTicketCard :ticket_id="ticket.ticket_id" :created_on="ticket.created_on" :title="ticket.title"
-                  :chat="ticket.chat" :type="ticket.type" :status="ticket.status">
+                  :chat="ticket.chat" :type="ticket.type" :status="ticket.status" :public_ticket_url="ticket.discourse_public_ticket_url">
                 </StudentTicketCard>
               </template>
             </div>

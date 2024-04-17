@@ -10,10 +10,10 @@
                             <b-icon icon="x-circle" variant="Danger" v-show="status == 'unresolved'"></b-icon>
                         </b-col>
                         <b-col cols="12" sm="5" md="8">
-                            <p style="font-weight: 500; font-size:x-large; margin: 0;">Title: {{ title }}
+                            <p style="font-weight: 500; font-size:x-large; margin: 0;">Title: {{ title.slice(0,50) }}
                             </p>
                             <p style="font-weight: 200; font-size:large; margin: 0;">
-                                Description:{{ description }}</p>
+                                Description:{{ description.slice(0,80) }}</p>
                         </b-col>
                         <b-col cols="12" sm="5" md="3" align-v="center">
                             <p style="font-size: small;"> created_on: {{ formated_created_on }} </p>
@@ -73,7 +73,7 @@
                             <a :href="public_ticket_url" target="_blank">
                             <b-button variant="outline-primary"> 
                                 <img src="../../public/discourse_logo.png" style="height: 15px; width: 15px; opacity: 50%;">
-                                Comment
+                                Visit Ticket
                                 </b-button> </a>
                             </b-col>
                                 <b-col cols="12" sm="5" md="2">

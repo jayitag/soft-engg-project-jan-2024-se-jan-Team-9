@@ -9,7 +9,7 @@
                             <b-icon icon="x-circle" variant="danger" v-show="status == 'unresolved'"></b-icon> -->
                         </b-col>
                         <b-col cols="8">
-                            <p style="font-weight: 500; font-size:x-large; margin: 0;">{{ title }}</p>
+                            <p style="font-weight: 500; font-size:x-large; margin: 0;">Title: {{ title }}</p>
                         </b-col>
                         <b-col cols="3" align-v="center"  style="text-align: end;">
                             <p style="font-size: small;">Created on: {{ formated_created_on }}</p>
@@ -59,7 +59,9 @@
         <ChatWindowAdmin v-if="displayChat" 
             :format_chat="get_formated_ticket" 
             :close_chat="closeChat" 
-            :chat="formated_chat" :tick_id="ticket_id">
+            :chat="formated_chat" 
+            :tick_id="ticket_id"
+            :title="title">
         </ChatWindowAdmin>
     </div>
 </template>

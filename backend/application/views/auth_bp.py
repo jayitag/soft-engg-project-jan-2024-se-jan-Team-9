@@ -24,7 +24,7 @@ from application.common_utils import (
     convert_img_to_base64,
     is_img_path_valid,
 )
-
+from application.notifications import send_email
 # --------------------  Code  --------------------
 
 
@@ -256,7 +256,21 @@ class Register(Resource):
                     # Redirect to login page in frontend
                     # No need to create web_token as during login it will
                     # be created
-
+                    try:
+                        resp = send_email(
+                            occasion= "REGISTER_OCCASION",
+                            to=[{"email": details["email"], "username": details["first_name"]}],
+                            _from= "admin@gmail.com",
+                            subject="Registration Confirmation",
+                            data={"username": details["first_name"]}
+                        )
+                    except Exception as e:
+                        logger.error(
+                            f"Register->send mail : Error occurred while sending registration email : {e}"
+                        )
+                        # Handle error if email sending fails
+                    
+                    
                     logger.info("New account created")
                     raise Success_200(
                         status_msg="Account created successfully. Now please login."

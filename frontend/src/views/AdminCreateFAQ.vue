@@ -7,7 +7,7 @@
         <b-col cols="1"></b-col>
         <b-col cols="6">
           <h3 style="text-align: center"><br>Suggestions</h3>
-          <div style="height: 550px; overflow: auto; padding: 10px ;border: 2px solid black;">
+          <div style="  padding: 10px ;border: 2px solid black;">
             <SearchTicketFAQ :ticket_card_details="resolved_tickets" />
 
           </div>

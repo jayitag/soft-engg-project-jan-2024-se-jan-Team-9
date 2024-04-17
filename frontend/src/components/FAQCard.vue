@@ -10,7 +10,9 @@
           <b> Solution : </b> {{ answer }}
           <div v-show="attachments.length > 0">
             <p>Attachments:</p>
+            <p>{{ attachments }}</p>
             <div v-for="(attach, imageIndex) in attachments" :key="imageIndex">
+              {{ attach }}
               <img :src="attach.attachment_loc" class="img-fluid" />
             </div>
           </div>

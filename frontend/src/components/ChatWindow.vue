@@ -1,7 +1,7 @@
 <template>
   
   <div class="chat_window">
-    <h3 class="card_title">Title: {{ ticket_title }}</h3>
+    <h3 class="card_title">Title: {{ ticket_title.slice(0,20) }}...</h3>
     <button class="close_button" @click="close()">
                                 <span class=" X"></span>
       <span class="Y"></span>
@@ -10,6 +10,9 @@
       <div class="chat_display">
         <div v-for="(value, key) in massages" :key="key">
           <p :class="['chat_bubble',  value.role]">{{ value.chat }} </p>
+          <div v-if="value.is_attachment == 'True'" class="chat_bubble_attachment">
+          <b-img thumbnail fluid :src="attachment" v-if="is_attachment" alt="Attachment"></b-img>
+          </div>
           <p :class="['chat_bubble_name_' + value.role]">{{ value.name }} </p>
           <p :class="['chat_bubble_date_' + value.role]">{{ value.date_time }} </p>
         </div>
@@ -52,14 +55,46 @@ export default {
       },
       massages: "",
       user_logined_role: this.$store.getters.get_user_role,
+      is_attachment: false,
+      attachment:""
     }
   },
   created() {
-    this.get_chat()
+    this.get_chat(),
+    this.getAttachment()
   },
   methods: {
     close() {
       this.close_chat();
+    },
+    getAttachment(){
+      console.log("hello")
+      fetch(common.CHAT_API + `/attachment/${this.tick_id}/${this.$store.getters.get_user_id}`, {
+        method: "GET",
+        headers: {
+          "Content-Type": "application/json",
+          web_token: this.$store.getters.get_web_token,
+          user_id: this.$store.getters.get_user_id,
+        },
+      })
+        .then((response) => response.json())
+        .then((data) => {
+
+          if (data.category == "success") {
+
+            this.attachment = data.message[0].attachment_loc
+            this.is_attachment = true
+            console.log(this.attachment_link)
+          }
+          if (data.category == "error") {
+            
+            this.flashMessage.error({
+              message: data.message,
+            });
+          }
+        })
+        
+          return '';
     },
     get_chat() {
       fetch(common.CHAT_API + `/${this.tick_id}/${this.$store.getters.get_user_id}`, {
@@ -215,7 +250,14 @@ export default {
   transform: translateX(-50%) rotate(-45deg);
 }
 
-
+.chat_bubble_attachment{
+  position: relative;
+  max-width: 300px;
+  float: right;
+  clear: both;
+  right: 10px;
+  top: -15px;
+}
 
 .close_button:hover {
   background-color: rgb(211, 21, 21);
@@ -376,7 +418,7 @@ export default {
 
 .card_title{
   position: relative;
-    transform: translate(63%, 612%);
+    transform: translate(63%, 618%);
     z-index: 1;
     font-weight: bold;
     width: 671px;
